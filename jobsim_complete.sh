@@ -1,6 +1,8 @@
 #!/bin/bash
+#
+# USAGE:
+# sbatch -a<min>-<max> jobsim_complete.sh <pref> <nevt> <dec> <mom> <saveall>
 
-# USAGE: $ sbatch -a<min>-<max> jobsim_complete.sh <pref> <nevt> <dec> <mom> <saveall>
 
 #SBATCH -J pndsim
 #SBATCH --time=2:00:00
@@ -10,10 +12,9 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=adeel.chep@gmail.com
 
-#Set paths
+#PandaRoot
 . "/lustre/nyx/panda/aakram/pandaroot/build-oct19/config.sh"
 
-#Options
 if [ $# -lt 1 ]; then
   echo -e "\nJob script for submission of PandaRoot simulation jobs on KRONOS.\n"
   echo -e "USAGE: sbatch -a<min>-<max> jobsim_complete.sh <prefix> <nevts> <gen> <pbeam> [opt] [mode]\n"
@@ -24,24 +25,23 @@ if [ $# -lt 1 ]; then
   echo -e " <gen>     : Name of EvtGen decay file 'xxx.dec:iniRes'. Keyword 'DPM/FTF/BOX' instead runs other generator"
   echo -e " <pbeam>   : Momentum of pbar-beam."
   echo -e " [opt]     : Optional options: if contains 'savesim', sim output is copied as well.";
-  echo -e " [opt]     : Optional options: if contaviins 'saveall', all output (sim, digi, reco, pid) is copied as well.";
+  echo -e " [opt]     : Optional options: if contains 'saveall', all output (sim, digi, reco, pid) is copied as well.";
   echo -e " [opt]     : Optional options: if contains 'ana', runs prod_ana.C in addition.";
   echo -e " [mode]    : Optional mode number for analysis.\n";
   echo -e "Example 1 : sbatch -a1-20 jobsim_complete.sh d0sim 1000 D0toKpi.dec 12. ana 10"
   echo -e "Example 2 : sbatch -a1-20 jobsim_complete.sh dpmbkg 1000 dpm 12."
   echo -e "Example 3 : sbatch -a1-20 jobsim_complete.sh singleK 1000 box:type[321,1]:p[0.05,8]:tht[0,180]:phi[0,360] 12.\n"
-  echo -e "Example 4 : sbatch -a1-20 jobsim_complete.sh bkg 1000 llbar_bkg.dec 1.642 none 10"
   
   exit 1
 fi
 
 
 nyx="/lustre/nyx/panda/aakram/AdeelProdMarco"
-_target=$nyx"/data/fwp/"
+_target=$nyx"/data/bkg/"
 
 prefix=ll
 nevt=20
-dec="llbar_fwp.DEC"
+dec="llbar_bkg.DEC"
 mom=1.642
 opt=""
 mode=0
@@ -78,10 +78,22 @@ fi
 outprefix=$tmpdir$prefix"_"$run
 pidfile=$outprefix"_pid.root"
 
-root -l -q -b $nyx"/"sim_complete.C\(\"$outprefix\",$nevt,\"$dec\",$mom\) &> $outprefix"_sim.log"
-root -l -b -q $nyx"/"prod_dig.C\(\"$outprefix\"\) &> $outprefix"_digi.log"
-root -l -b -q $nyx"/"prod_rec.C\(\"$outprefix\"\) &> $outprefix"_reco.log"
-root -l -b -q $nyx"/"prod_pid.C\(\"$outprefix\"\) &> $outprefix"_pid.log"
+
+# Test Flags
+echo ""
+echo "Prefix: $outprefix"
+echo "Option: $nevt, $outprefix, $mode, $dec, $mom"
+echo "Target: $_target"
+echo ""
+
+sim="simall"
+
+if [[ $sim == *"simall"* ]]; then
+	root -l -q -b $nyx"/"sim_complete.C\(\"$outprefix\",$nevt,\"$dec\",$mom\) &> $outprefix"_sim.log"
+	root -l -b -q $nyx"/"prod_dig.C\(\"$outprefix\"\) &> $outprefix"_digi.log"
+	root -l -b -q $nyx"/"prod_rec.C\(\"$outprefix\"\) &> $outprefix"_reco.log"
+	root -l -b -q $nyx"/"prod_pid.C\(\"$outprefix\"\) &> $outprefix"_pid.log"
+fi
 
 # copy sim output to storage element
 if [[ $opt == *"savesim"* ]]; then
