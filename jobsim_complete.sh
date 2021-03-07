@@ -12,8 +12,6 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=adeel.chep@gmail.com
 
-#PandaRoot
-. "/lustre/nyx/panda/aakram/pandaroot/build-oct19/config.sh"
 
 if [ $# -lt 1 ]; then
   echo -e "\nJob script for submission of PandaRoot simulation jobs on KRONOS.\n"
@@ -35,10 +33,23 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
+#***
+#---- Access Shared Storage on Cluster
+#***
 
-nyx="/lustre/nyx/panda/aakram/AdeelProdMarco"
+#export LUSTRE_HOME=/lustre/$(id -g -n)/$USER
+export LUSTRE_HOME=/lustre/panda/$USER
+
+
+#Working DIR
+nyx=$LUSTER_HOME"/virgo"
 _target=$nyx"/data/bkg/"
 
+#PandaRoot
+. $LUSTER_HOME"/pandaroot/build-oct19/config.sh"
+
+
+#Macro Parameters
 prefix=ll
 nevt=20
 dec="llbar_bkg.DEC"
@@ -80,15 +91,22 @@ pidfile=$outprefix"_pid.root"
 
 
 # Test Flags
+echo "Setting Up..."
+echo "LUSTER_HOME: $LUSTER_HOME"
+echo "Working_HOME: $nyx"
+
+echo "Script Inputs: $prefix, $nevt, $mode, $dec, $mom, $opt, $mode"
+echo "In Prefix: $prefix"
+echo "Out Prefix: $outprefix"
+echo "Data Dir. : $_target"
 echo ""
-echo "Prefix: $outprefix"
-echo "Option: $nevt, $outprefix, $mode, $dec, $mom"
-echo "Target: $_target"
-echo ""
+echo "Starting Simulation..."
+
 
 sim="simall"
 
 if [[ $sim == *"simall"* ]]; then
+
 	root -l -q -b $nyx"/"sim_complete.C\(\"$outprefix\",$nevt,\"$dec\",$mom\) &> $outprefix"_sim.log"
 	root -l -b -q $nyx"/"prod_dig.C\(\"$outprefix\"\) &> $outprefix"_digi.log"
 	root -l -b -q $nyx"/"prod_rec.C\(\"$outprefix\"\) &> $outprefix"_reco.log"
@@ -103,6 +121,7 @@ fi
 
 # copy all output to storage element
 if [[ $opt == *"saveall"* ]]; then
+
    cp  $outprefix"_sim.log" $_target
    cp  $outprefix"_sim.root" $_target
    cp  $outprefix"_digi.log" $_target
