@@ -8,7 +8,7 @@
 #SBATCH -A aakram					                    # Account Name (--account=g2020014)
 #SBATCH -J pndsim					                    # Job Name (--job-name=HitPairs)
 #SBATCH -t 2:00:00					                    # Time (DD-HH:MM) (--time=0:59:00)
-#s-BATCH -p debug					                    # Partition (debug/main/long/grid) (--partition=node)
+#SBATCH -p main					                        # Partition (debug/main/long/grid) (--partition=node)
 #s-BATCH -N 2						                    # No. of Nodes Requested (--nodes=2)
 
 # *** I/O ***	     
@@ -50,7 +50,7 @@ WORKING_HOME=$LUSTRE_HOME"/llbar"
 _target=$WORKING_HOME"/data/bkg/"
 
 #PandaRoot Path
-. $LUSTRE_HOME"/pandaroot/build-oct19/config.sh"
+. "/lustre/panda/aakram/pandaroot/build-oct19/config.sh"
 
 #Macro DIR
 nyx="/u/aakram/virgo"
@@ -102,24 +102,33 @@ pidfile=$outprefix"_pid.root"
 # Test Flags
 echo "Setting Up..."
 echo "LUSTER_HOME: $LUSTRE_HOME"
-echo "Working_HOME: $WORKING_HOME"
-echo "NYX: $nyx"
+echo "Working_HOME: $nyx"
 echo ""
 echo "Script Inputs: $prefix, $nevt, $mode, $dec, $mom, $opt, $mode"
 echo "Out Prefix: $outprefix"
 echo "Data Dir. : $_target"
 echo ""
-echo "Starting Simulation..."
 
 
-sim=""
+
+sim="simall"
 
 if [[ $sim == *"simall"* ]]; then
+    
+    echo ""
+    echo "Started Simulating..."
+    root -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom\) > $outprefix"_sim.log" 2>&1
 
-	root -l -q -b $nyx"/"sim_complete.C\(\"$outprefix\",$nevt,\"$dec\",$mom\) &> $outprefix"_sim.log"
-	root -l -b -q $nyx"/"prod_dig.C\(\"$outprefix\"\) &> $outprefix"_digi.log"
-	root -l -b -q $nyx"/"prod_rec.C\(\"$outprefix\"\) &> $outprefix"_reco.log"
-	root -l -b -q $nyx"/"prod_pid.C\(\"$outprefix\"\) &> $outprefix"_pid.log"
+    echo "Started Digitization..."
+    root -b -q $nyx"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
+
+    echo "Started Ideal Reconstruction..."
+    root -b -q $nyx"/"prod_reco.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
+
+    echo "Started Ideal PID..."
+    root -b -q $nyx"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
+    echo ""
+
 fi
 
 # copy sim output to storage element

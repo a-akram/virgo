@@ -1,23 +1,24 @@
 #!/bin/bash
 
-# USAGE: $ ./runext.sh 10000 llbar bkg llbar_bkg.DEC 1.642
+# USAGE: $ ./runall.sh 10000 llbar bkg llbar_bkg.DEC 1.642
 
 #Set paths
 . "/home/adeel/fair/pandaroot_dev/trackml-20-01-21/config.sh"
 
 # Defaults
-nevt=10000
+nevt=1000
 prefix=llbar
 mode="fwp"         # fwp, bkg, dpm
 mom=1.642
 
 # Flags
 sim="simall"
-ana="anaall"
+ana=""
 opt=""
 
-# Set Path (Fix Accordingly for GSI)
-nyx="/lustre/nyx/panda/aakram/virgo"
+# Set Path
+#nyx=$HOME"/current/2_deepana/rgis/standard"
+nyx=$HOME"/current/2_deepana/rgis/extended"
 
 # From User
 if test "$1" != ""; then
@@ -71,11 +72,6 @@ if [[ $sim == *"simall"* ]]; then
 
     echo "Started Ideal PID..."
     root -b -q $nyx"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
-
-    echo "Starting Analysis..."
-    #root -b -q prod_anaideal.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
-    #root -b -q ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_anantp.log" 2>&1
-    echo "Finishing Simulation..."
     echo ""
 fi
 
@@ -86,8 +82,8 @@ if [[ $ana == *"anaall"* ]]; then
 
     echo ""
     echo "Starting Analysis..."
-    root -b -q prod_anaideal.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
-    root -b -q ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
+    #root -b -q $nyx"/"prod_anaideal.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
+    root -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
     echo "Finishing Analysis..."
     echo ""
 fi

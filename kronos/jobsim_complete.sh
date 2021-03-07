@@ -1,8 +1,9 @@
 #!/bin/bash
-#
+
 # USAGE:
 # sbatch -a<min>-<max> jobsim_complete.sh <pref> <nevt> <dec> <mom> <saveall>
-#
+# sbatch -a1-20 -- jobsim_complete.sh bkg 1000 llbar_bkg.dec 1.642
+
 #SBATCH -J pndsim
 #SBATCH --time=8:00:00
 #SBATCH --get-user-env
@@ -10,7 +11,8 @@
 #SBATCH -o data/llbar/slurmlog/slurm_%j_errout.log
 
 #Set paths
-. "/lustre/nyx/panda/walter/pandaroot/build/config.sh"
+#. "/lustre/nyx/panda/walter/pandaroot/build/config.sh"
+. "/lustre/nyx/panda/aakram/pandaroot/build-oct19/config.sh"
 
 if [ $# -lt 1 ]; then
   echo -e "\nJob script for submission of PandaRoot simulation jobs on KRONOS.\n"
@@ -33,7 +35,8 @@ if [ $# -lt 1 ]; then
 fi
 
 
-nyx="/lustre/nyx/panda/walter/development/walter/Macros/prod"
+#nyx="/lustre/nyx/panda/walter/development/walter/Macros/prod"
+nyx="/u/aakram/virgo"
 _target=$nyx"/data/llbar/"
 
 prefix=ll
