@@ -42,17 +42,20 @@ fi
 
 
 #Shared Storage on Cluster
-#export LUSTRE_HOME=/lustre/$(id -g -n)/$USER
-LUSTRE_HOME="/lustre/panda/"$USER
+#LUSTRE_HOME=/lustre/$(id -g -n)/$USER
+#LUSTRE_HOME="/lustre/panda/"$USER
 
-_target=$LUSTRE_HOME"/data/bkg/"
+LUSTRE_HOME=/lustre/$(id -g -n)/$USER
+WORKING_HOME=$LUSTRE_HOME"/llbar"
+_target=$WORKING_HOME"/data/bkg/"
 
-#Working DIR (e.g. WORKING_HOME or nyx)
-WORKING_HOME=$LUSTRE_HOME"/virgo"
+#PandaRoot Path
+. $LUSTRE_HOME"/pandaroot/build-oct19/config.sh"
+
+#Macro DIR
 nyx="/u/aakram/virgo"
 
-#PandaRoot
-. $LUSTRE_HOME"/pandaroot/build-oct19/config.sh"
+
 
 
 #Macro Parameters
@@ -100,7 +103,7 @@ pidfile=$outprefix"_pid.root"
 echo "Setting Up..."
 echo "LUSTER_HOME: $LUSTRE_HOME"
 echo "Working_HOME: $WORKING_HOME"
-echo "MACRO_HOME: $nyx"
+echo "NYX: $nyx"
 echo ""
 echo "Script Inputs: $prefix, $nevt, $mode, $dec, $mom, $opt, $mode"
 echo "Out Prefix: $outprefix"
