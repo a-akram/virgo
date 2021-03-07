@@ -61,16 +61,16 @@ if [[ $sim == *"simall"* ]]; then
 
     echo ""
     echo "Started Simulating..."
-    root -q -b $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom\) > $outprefix"_sim.log" 2>&1
+    root -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom\) > $outprefix"_sim.log" 2>&1
 
     echo "Started Digitization..."
-    root -q -b $nyx"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
+    root -b -q $nyx"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
 
     echo "Started Ideal Reconstruction..."
-    root -q -b $nyx"/"prod_reco.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
+    root -b -q $nyx"/"prod_reco.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
 
     echo "Started Ideal PID..."
-    root -q -b $nyx"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
+    root -b -q $nyx"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
 
     echo "Starting Analysis..."
     #root -b -q prod_anaideal.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
