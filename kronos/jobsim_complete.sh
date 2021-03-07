@@ -1,19 +1,17 @@
 #!/bin/bash
-
-# USAGE: $ sbatch -a<min>-<max> jobsim_complete.sh <pref> <nevt> <dec> <mom> <saveall>
-
+#
+# USAGE:
+# sbatch -a<min>-<max> jobsim_complete.sh <pref> <nevt> <dec> <mom> <saveall>
+#
 #SBATCH -J pndsim
-#SBATCH --time=2:00:00
+#SBATCH --time=8:00:00
 #SBATCH --get-user-env
 #SBATCH -e data/llbar/slurmlog/slurm_%j_errout.log
 #SBATCH -o data/llbar/slurmlog/slurm_%j_errout.log
-#SBATCH --mail-type=END
-#SBATCH --mail-user=adeel.chep@gmail.com
 
 #Set paths
-. "/lustre/nyx/panda/aakram/pandaroot/build-oct19/config.sh"
+. "/lustre/nyx/panda/walter/pandaroot/build/config.sh"
 
-#Options
 if [ $# -lt 1 ]; then
   echo -e "\nJob script for submission of PandaRoot simulation jobs on KRONOS.\n"
   echo -e "USAGE: sbatch -a<min>-<max> jobsim_complete.sh <prefix> <nevts> <gen> <pbeam> [opt] [mode]\n"
@@ -24,20 +22,19 @@ if [ $# -lt 1 ]; then
   echo -e " <gen>     : Name of EvtGen decay file 'xxx.dec:iniRes'. Keyword 'DPM/FTF/BOX' instead runs other generator"
   echo -e " <pbeam>   : Momentum of pbar-beam."
   echo -e " [opt]     : Optional options: if contains 'savesim', sim output is copied as well.";
-  echo -e " [opt]     : Optional options: if contaviins 'saveall', all output (sim, digi, reco, pid) is copied as well.";
+  echo -e " [opt]     : Optional options: if contains 'saveall', all output (sim, digi, reco, pid) is copied as well.";
   echo -e " [opt]     : Optional options: if contains 'ana', runs prod_ana.C in addition.";
   echo -e " [mode]    : Optional mode number for analysis.\n";
   echo -e "Example 1 : sbatch -a1-20 jobsim_complete.sh d0sim 1000 D0toKpi.dec 12. ana 10"
   echo -e "Example 2 : sbatch -a1-20 jobsim_complete.sh dpmbkg 1000 dpm 12."
   echo -e "Example 3 : sbatch -a1-20 jobsim_complete.sh singleK 1000 box:type[321,1]:p[0.05,8]:tht[0,180]:phi[0,360] 12.\n"
-  echo -e "Example 4 : sbatch -a1-20 jobsim_complete.sh bkg 1000 llbar_bkg.dec 1.642 none 10"
   
   exit 1
 fi
 
 
-nyx="/lustre/nyx/panda/aakram/AdeelProdMarco"
-_target=$nyx"/data/fwp/"
+nyx="/lustre/nyx/panda/walter/development/walter/Macros/prod"
+_target=$nyx"/data/llbar/"
 
 prefix=ll
 nevt=20

@@ -6,7 +6,7 @@
 #SBATCH -o data/llbar/slurmlog/slurm_%j_errout.log
 
 #Set paths
-. "/lustre/nyx/panda/walter/oct19/build/config.sh"
+. "/lustre/nyx/panda/walter/pandaroot/build/config.sh"
 
 if [ $# -lt 1 ]; then
   echo -e "\nJob script for submission of PandaRoot analysis jobs based on macro 'prod_ana_fast.C' on KRONOS. *The macro needs to configured beforehand!*\n"
@@ -24,8 +24,8 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
-nyx="/lustre/nyx/panda/aakram/AdeelProdMarco"
-_target=$nyx"/data/bkg/"
+nyx="/lustre/nyx/panda/walter/development/walter/Macros/prod"
+_target=$nyx"/data/llbar/"
 
 prefix=ll
 from=1

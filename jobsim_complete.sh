@@ -1,16 +1,22 @@
 #!/bin/bash
-#
-# USAGE:
-# sbatch -a<min>-<max> jobsim_complete.sh <pref> <nevt> <dec> <mom> <saveall>
 
+# *** USAGE *** 
+# sbatch -a<min>-<max> -- jobsim_complete.sh <pref> <nevt> <dec> <mom> <saveall>
+# sbatch -a1-20 -- jobsim_complete.sh bkg 1000 llbar_bkg.dec 1.642 
 
-#SBATCH -J pndsim
-#SBATCH --time=2:00:00
-#SBATCH --get-user-env
-#SBATCH -e data/llbar/slurmlog/slurm_%j_errout.log
-#SBATCH -o data/llbar/slurmlog/slurm_%j_errout.log
-#SBATCH --mail-type=END
-#SBATCH --mail-user=adeel.chep@gmail.com
+# *** Account ***
+#SBATCH -A aakram					                    # Account Name (--account=g2020014)
+#SBATCH -J pndsim					                    # Job Name (--job-name=HitPairs)
+#SBATCH -t 2:00:00					                    # Time (DD-HH:MM) (--time=0:59:00)
+#s-BATCH -p debug					                    # Partition (debug/main/long/grid) (--partition=node)
+#s-BATCH -N 2						                    # No. of Nodes Requested (--nodes=2)
+
+# *** I/O ***	     
+#SBATCH --get-user-env                                  # Set Slurm Working Directory (--chdir=<directory>)
+#SBATCH -o data/llbar/slurmlog/slurm_%j_errout.log      # Standard Output (--output=<filename pattern>)
+#SBATCH -e data/llbar/slurmlog/slurm_%j_errout.log      # standard Error (--error=<filename pattern>)
+#SBATCH --mail-type=END					                # Notification Type
+#SBATCH --mail-user=adeel.chep@gmail.com		        # Email for notification
 
 
 if [ $# -lt 1 ]; then
@@ -29,21 +35,21 @@ if [ $# -lt 1 ]; then
   echo -e "Example 1 : sbatch -a1-20 jobsim_complete.sh d0sim 1000 D0toKpi.dec 12. ana 10"
   echo -e "Example 2 : sbatch -a1-20 jobsim_complete.sh dpmbkg 1000 dpm 12."
   echo -e "Example 3 : sbatch -a1-20 jobsim_complete.sh singleK 1000 box:type[321,1]:p[0.05,8]:tht[0,180]:phi[0,360] 12.\n"
+  echo -e "Example 4 : sbatch -a1-20 jobsim_complete.sh bkg 1000 llbar_bkg.dec 1.642 none 10"
   
   exit 1
 fi
 
-#***
-#---- Access Shared Storage on Cluster
-#***
 
+#Shared Storage on Cluster
 #export LUSTRE_HOME=/lustre/$(id -g -n)/$USER
 export LUSTRE_HOME=/lustre/panda/$USER
 
+_target=$LUSTER_HOME"/data/bkg/"
 
-#Working DIR
-nyx=$LUSTER_HOME"/virgo"
-_target=$nyx"/data/bkg/"
+#Working DIR (e.g. WORKING_HOME or nyx)
+WORKING_HOME=$LUSTER_HOME"/virgo"
+nyx="/u/aakram/virgo"
 
 #PandaRoot
 . $LUSTER_HOME"/pandaroot/build-oct19/config.sh"
@@ -93,17 +99,17 @@ pidfile=$outprefix"_pid.root"
 # Test Flags
 echo "Setting Up..."
 echo "LUSTER_HOME: $LUSTER_HOME"
+echo "Working_HOME: $WORKING_HOME"
 echo "Working_HOME: $nyx"
-
+echo ""
 echo "Script Inputs: $prefix, $nevt, $mode, $dec, $mom, $opt, $mode"
-echo "In Prefix: $prefix"
 echo "Out Prefix: $outprefix"
 echo "Data Dir. : $_target"
 echo ""
 echo "Starting Simulation..."
 
 
-sim="simall"
+sim=""
 
 if [[ $sim == *"simall"* ]]; then
 
@@ -121,7 +127,6 @@ fi
 
 # copy all output to storage element
 if [[ $opt == *"saveall"* ]]; then
-
    cp  $outprefix"_sim.log" $_target
    cp  $outprefix"_sim.root" $_target
    cp  $outprefix"_digi.log" $_target
@@ -145,19 +150,21 @@ cp  $outprefix"_par.root" $_target
 cp  $outprefix"_pid.log" $_target
 cp  $outprefix"_pid.root" $_target
 
-# tidy up
-rm  $outprefix"_par.root"
-rm  $outprefix"_sim.log"
-rm  $outprefix"_digi.log"
-rm  $outprefix"_reco.log"
-rm  $outprefix"_pid.log"
-rm  $outprefix"_sim.root"
-rm  $outprefix"_digi.root"
-rm  $outprefix"_reco.root"
-rm  $outprefix"_pid.root"
+#*** Tidy Up ***
+if [[ $opt == *"removeall"* ]]; then
+    rm  $outprefix"_par.root"
+    rm  $outprefix"_sim.log"
+    rm  $outprefix"_digi.log"
+    rm  $outprefix"_reco.log"
+    rm  $outprefix"_pid.log"
+    rm  $outprefix"_sim.root"
+    rm  $outprefix"_digi.root"
+    rm  $outprefix"_reco.root"
+    rm  $outprefix"_pid.root"
+if
 
 if [[ $opt == *"ana"* ]]; then
-   rm  $outprefix"_pid_ana.root"
-   rm  $outprefix"_ana.log"
+    rm  $outprefix"_pid_ana.root"
+    rm  $outprefix"_ana.log"
 fi
 
