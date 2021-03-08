@@ -32,7 +32,7 @@ prefix=llbar
 mode="fwp"                  # fwp, bkg, dpm
 dec="llbar_fwp.DEC"
 mom=1.642
-
+opt="moveall"
 
 #Macro Directory
 nyx=$WORKING_HOME
@@ -120,3 +120,18 @@ if [[ $ana == *"anaall"* ]]; then
     echo ""
 fi
 
+
+
+# move all output to storage element
+if [[ $opt == *"moveall"* ]]; then
+   mv  $outprefix"_par.root" $_target
+   mv  $outprefix"_sim.log" $_target
+   mv  $outprefix"_sim.root" $_target
+   mv  $outprefix"_digi.log" $_target
+   mv  $outprefix"_digi.root" $_target
+   mv  $outprefix"_reco.log" $_target
+   mv  $outprefix"_reco.root" $_target
+   mv  $outprefix"_pid.log" $_target
+   mv  $outprefix"_pid.root" $_target
+   mv  $outprefix"_ana.root" $_target
+fi
