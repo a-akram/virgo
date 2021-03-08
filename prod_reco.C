@@ -1,7 +1,7 @@
 // Macro for running Panda reconstruction tasks
 // to run the macro:
 // root  recoideal_complete.C  or in root session root>.x  recoideal_complete.C
-void prod_reco(Int_t nEvents=10, TString prefix="ll") {
+int prod_reco(Int_t nEvents=10, TString prefix="ll") {
 
     std::cout << "FLAGS: " << nEvents << "," << prefix << std::endl;
     
@@ -39,6 +39,6 @@ void prod_reco(Int_t nEvents=10, TString prefix="ll") {
     fRun->Finish();
     
     
-    exit(0);
+    return 0;
 }
 

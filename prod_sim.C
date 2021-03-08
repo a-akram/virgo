@@ -6,7 +6,7 @@
 // root  sim_complete.C"(100, "TGeant4",2)"
 
 //pBeam=7.0 -> CM energy at X(3872) mass
-void prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.DEC", Double_t pBeam=1.642) {
+int prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.DEC", Double_t pBeam=1.642) {
     
     std::cout << "FLAGS: " << nEvents << "," << prefix << "," << inputGen << "," << pBeam << std::endl;
 
@@ -73,5 +73,5 @@ void prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp
     fRun->Finish();
 
 
-    exit(0);
+    return 0;
 }

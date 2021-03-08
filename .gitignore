@@ -1,0 +1,13 @@
+*~
+*.root
+*.log
+*.pdf
+*.png
+*.csv
+*.dat
+*.jpg
+core*
+build
+
+
+

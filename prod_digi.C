@@ -1,7 +1,7 @@
 // Macro for running Panda digitization tasks
 // to run the macro:
 // root  digi_complete.C  or in root session root>.x  digi_complete.C
-void prod_digi(Int_t nEvents=10, TString prefix="ll") {
+int prod_digi(Int_t nEvents=10, TString prefix="ll") {
     
     std::cout << "FLAGS: " << nEvents << "," << prefix << std::endl;
 
@@ -39,5 +39,5 @@ void prod_digi(Int_t nEvents=10, TString prefix="ll") {
     fRun->Finish();
 
 
-    //exit(0);
+    return 0;
 }

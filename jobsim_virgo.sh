@@ -5,18 +5,18 @@
 # sbatch -a1-20 -- jobsim_complete.sh bkg 1000 llbar_bkg.dec 1.642 
 
 # *** Account ***
-#SBATCH -A aakram					                    # Account Name (--account=g2020014)
-#SBATCH -J pndsim					                    # Job Name (--job-name=HitPairs)
-#SBATCH -t 2:00:00					                    # Time (DD-HH:MM) (--time=0:59:00)
-#SBATCH -p main					                        # Partition (debug/main/long/grid) (--partition=node)
-#s-BATCH -N 2						                    # No. of Nodes Requested (--nodes=2)
+#SBATCH -A aakram					               # Account Name (--account=g2020014)
+#SBATCH -J pndsim					               # Job Name (--job-name=HitPairs)
+#SBATCH -t 2:00:00					               # Time (DD-HH:MM) (--time=0:59:00)
+#SBATCH -p main					                   # Partition (debug/main/long/grid) (--partition=node)
+#s-BATCH -N 2						               # No. of Nodes Requested (--nodes=2)
 
 # *** I/O ***	     
-#SBATCH --get-user-env                                  # Set Slurm Working Directory (--chdir=<directory>)
-#SBATCH -o data/llbar/slurmlog/slurm_%j_errout.log      # Standard Output (--output=<filename pattern>)
-#SBATCH -e data/llbar/slurmlog/slurm_%j_errout.log      # standard Error (--error=<filename pattern>)
-#SBATCH --mail-type=END					                # Notification Type
-#SBATCH --mail-user=adeel.chep@gmail.com		        # Email for notification
+#SBATCH --get-user-env                             # Working Directory (-D, --chdir=<directory>). Default=PWD
+#SBATCH -o data/llbar/slurmlog/slurm_%j_errout.log # Standard Output (--output=<filename pattern>)
+#SBATCH -e data/llbar/slurmlog/slurm_%j_errout.log # standard Error (--error=<filename pattern>)
+#SBATCH --mail-type=END					           # Notification Type
+#SBATCH --mail-user=adeel.chep@gmail.com		   # Email for notification
 
 
 if [ $# -lt 1 ]; then
@@ -43,9 +43,7 @@ fi
 
 #Shared Storage on Cluster
 #LUSTRE_HOME=/lustre/$(id -g -n)/$USER
-#LUSTRE_HOME="/lustre/panda/"$USER
-
-LUSTRE_HOME=/lustre/$(id -g -n)/$USER
+LUSTRE_HOME="/lustre/panda/"$USER
 WORKING_HOME=$LUSTRE_HOME"/llbar"
 _target=$WORKING_HOME"/data/bkg/"
 

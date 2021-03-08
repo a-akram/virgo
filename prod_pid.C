@@ -1,7 +1,7 @@
 // Macro for running Panda pid tasks
 // to run the macro:
 // root  pid_complete.C  or in root session root>.x  pid_complete.C
-void prod_pid(Int_t nEvents=10, TString prefix="ll") {
+int prod_pid(Int_t nEvents=10, TString prefix="ll") {
     
     std::cout << "FLAGS: " << nEvents << "," << prefix << std::endl;
     
@@ -40,6 +40,6 @@ void prod_pid(Int_t nEvents=10, TString prefix="ll") {
     fRun->Finish();
     
     
-    exit(0);
+    return 0;
 }
 

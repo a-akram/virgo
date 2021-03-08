@@ -1,26 +1,43 @@
 #!/bin/bash
 
-# USAGE: $ ./runall.sh 10000 llbar bkg llbar_bkg.DEC 1.642
+if [ $# -lt 3 ]; then
+  echo -e "\nJob script for submission of PandaRoot simulation jobs on KRONOS.\n"
+  echo -e "USAGE: runall.sh <nevt> <prefix> <mode> <dec> <pbeam>\n"
+  echo -e " <nevts>   : Number of events to be simulated"
+  echo -e " <prefix>  : Prefix of output files"
+  echo -e " <mode>    : Optional mode number for analysis (fwp, bkg, dpm)."
+  echo -e " <dec>     : Name of EvtGen decay file 'xxx.dec'. Keyword 'DPM/FTF/BOX' runs other generator"
+  echo -e " <pbeam>   : Momentum of pbar-beam."
+  echo -e " [opt]     : Optional options: if contains 'savesim', sim output is copied as well.\n"
+  echo -e "Example 1 : runall.sh 10000 llbar bkg llbar_bkg.DEC 1.642"
+  echo -e "Example 2 : runall.sh 10000 llbar bkg"
+  
+  exit 1
+fi
 
-#Set paths
-. "/home/adeel/fair/pandaroot_dev/trackml-20-01-21/config.sh"
 
-# Defaults
-nevt=1000
+#Shared Storage on Cluster
+#LUSTRE_HOME=/lustre/$(id -g -n)/$USER
+LUSTRE_HOME="/lustre/panda/"$USER
+WORKING_HOME=$LUSTRE_HOME"/virgo"
+_target=$WORKING_HOME"/data/bkg/"
+
+#PandaRoot Path
+#. $LUSTRE_HOME"/pandaroot/build-oct19/config.sh"
+. "/lustre/panda/aakram/pandaroot/build-oct19/config.sh"
+
+#Default Parameters
+nevt=10000
 prefix=llbar
-mode="fwp"         # fwp, bkg, dpm
+mode="fwp"                  # fwp, bkg, dpm
+dec="llbar_fwp.DEC"
 mom=1.642
 
-# Flags
-sim="simall"
-ana=""
-opt=""
 
-# Set Path
-#nyx=$HOME"/current/2_deepana/rgis/standard"
-nyx=$HOME"/current/2_deepana/rgis/extended"
+#Macro Directory
+nyx=$WORKING_HOME
 
-# From User
+# User Input
 if test "$1" != ""; then
   nevt=$1
 fi
@@ -31,31 +48,46 @@ fi
 
 if test "$3" != ""; then
   mode=$3
+  dec="llbar_"$mode".DEC"
 fi
 
-dec=$prefix"_"$mode".DEC"
+if test "$4" != ""; then
+  dec=$4
+fi
+
+if test "$5" != ""; then
+  mom=$5
+fi
+
 outprefix=$prefix"_"$mode
 
 if [[ $mode == "fwp" ]]; then
     _target=$nyx"/1_"$mode
+    dec="llbar_fwp.DEC"
 fi
 
 if [[ $mode == "bkg" ]]; then
     _target=$nyx"/2_"$mode
+    dec="llbar_bkg.DEC"
 fi 
 
 if [[ $mode == "dpm" ]]; then
     _target=$nyx"/3_"$mode
     dec="dpm"
-fi 
+fi
 
-# Test Flags
-echo ""
-echo "Prefix: $outprefix"
-echo "Option: $nevt, $outprefix, $mode, $dec, $mom"
-echo "Target: $_target"
+
+# Dispaly Params
+echo "Display Params:"
+echo "(1) - Prefix: $outprefix"
+echo "(2) - Option: $nevt, $outprefix, $mode, $dec, $mom"
+echo "(3) - Target: $_target"
 echo ""
 
+
+# Set Flags
+sim=""
+ana=""
 
 # run simulation
 if [[ $sim == *"simall"* ]]; then
@@ -86,34 +118,5 @@ if [[ $ana == *"anaall"* ]]; then
     root -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
     echo "Finishing Analysis..."
     echo ""
-fi
-
-# copy all output to storage element
-if [[ $opt == *"saveall"* ]]; then
-   cp  $outprefix"_par.root" $_target
-   cp  $outprefix"_sim.log" $_target
-   cp  $outprefix"_sim.root" $_target
-   cp  $outprefix"_digi.log" $_target
-   cp  $outprefix"_digi.root" $_target
-   cp  $outprefix"_reco.log" $_target
-   cp  $outprefix"_reco.root" $_target
-   cp  $outprefix"_pid.log" $_target
-   cp  $outprefix"_pid.root" $_target
-   cp  $outprefix"_ana.root" $_target
-fi
-
-
-# move all output to storage element
-if [[ $opt == *"moveall"* ]]; then
-   mv  $outprefix"_par.root" $_target
-   mv  $outprefix"_sim.log" $_target
-   mv  $outprefix"_sim.root" $_target
-   mv  $outprefix"_digi.log" $_target
-   mv  $outprefix"_digi.root" $_target
-   mv  $outprefix"_reco.log" $_target
-   mv  $outprefix"_reco.root" $_target
-   mv  $outprefix"_pid.log" $_target
-   mv  $outprefix"_pid.root" $_target
-   mv  $outprefix"_ana.root" $_target
 fi
 
