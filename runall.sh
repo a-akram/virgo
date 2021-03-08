@@ -32,10 +32,15 @@ prefix=llbar
 mode="fwp"                  # fwp, bkg, dpm
 dec="llbar_fwp.DEC"
 mom=1.642
+
+# Set Flags
+sim="simall"
+ana="anaall"
 opt="moveall"
 
 #Macro Directory
 nyx=$WORKING_HOME
+
 
 # User Input
 if test "$1" != ""; then
@@ -85,9 +90,6 @@ echo "(3) - Target: $_target"
 echo ""
 
 
-# Set Flags
-sim=""
-ana=""
 
 # run simulation
 if [[ $sim == *"simall"* ]]; then
@@ -95,13 +97,10 @@ if [[ $sim == *"simall"* ]]; then
     echo ""
     echo "Started Simulating..."
     root -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom\) > $outprefix"_sim.log" 2>&1
-
     echo "Started Digitization..."
     root -b -q $nyx"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
-
     echo "Started Ideal Reconstruction..."
     root -b -q $nyx"/"prod_reco.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
-
     echo "Started Ideal PID..."
     root -b -q $nyx"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
     echo ""
@@ -114,8 +113,8 @@ if [[ $ana == *"anaall"* ]]; then
 
     echo ""
     echo "Starting Analysis..."
-    #root -b -q $nyx"/"prod_anaideal.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
-    root -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
+    root -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
+    #root -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
     echo "Finishing Analysis..."
     echo ""
 fi
@@ -133,5 +132,6 @@ if [[ $opt == *"moveall"* ]]; then
    mv  $outprefix"_reco.root" $_target
    mv  $outprefix"_pid.log" $_target
    mv  $outprefix"_pid.root" $_target
+   mv  $outprefix"_ana.log" $_target
    mv  $outprefix"_ana.root" $_target
 fi
