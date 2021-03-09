@@ -135,7 +135,6 @@ else
     echo "$tmpdir exists."
 fi
 
-
 # ---------------------------------------------------------------
 #                              Print Flags
 # ---------------------------------------------------------------
@@ -154,40 +153,33 @@ echo ""
 # ---------------------------------------------------------------
 #                            Initiate Simulaton
 # ---------------------------------------------------------------
-# Set Flags
-sim="simall"
-ana=""
-opt=""
 
-if [[ $sim == *"simall"* ]]; then
-    echo ""
-    echo "Started Simulating..."
-    root -b -q $scripts"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom\) > $outprefix"_sim.log" 2>&1
+echo ""
+echo "Started Simulating..."
+root -b -q $scripts"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom\) > $outprefix"_sim.log" 2>&1
 
-    echo "Started Digitization..."
-    root -b -q $scripts"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
+echo "Started Digitization..."
+#root -b -q $scripts"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
 
-    echo "Started Ideal Reconstruction..."
-    root -b -q $scripts"/"prod_reco.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
+echo "Started Ideal Reconstruction..."
+#root -b -q $scripts"/"prod_reco.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
 
-    echo "Started Ideal PID..."
-    root -b -q $scripts"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
-    
-    echo "Finished Simulating..."
-    echo ""
-fi
+echo "Started Ideal PID..."
+#root -b -q $scripts"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
 
+echo "Finished Simulating..."
+echo ""
 
-if [[ $ana == *"anaall"* ]]; then
-    echo "Starting Analysis..."
-    root -b -q $scripts"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
-    #root -b -q $scripts"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
-    echo "Finishing Analysis..."
-    echo ""
-fi
+echo "Starting Analysis..."
+#root -b -q $scripts"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
+#root -b -q $scripts"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
+echo "Finishing Analysis..."
+echo ""
+
 # ---------------------------------------------------------------
 #                            Storing Files
 # ---------------------------------------------------------------
+
 NUMEV=`grep 'Generated Events' $outprefix"_sim.log"`
 echo $NUMEV >> $outprefix"_pid.log"
 
@@ -196,67 +188,11 @@ ls -ltrh $tmpdir
 
 echo "Copying Files from $tmpdir to $_target"
 
-# move only necessary files.
-
-mv  $outprefix"_sim.log" $_target
-mv  $outprefix"_digi.log" $_target
-mv  $outprefix"_reco.log" $_target
-mv  $outprefix"_pid.log" $_target
-mv  $outprefix"_ana.log" $_target
-#mv  $outprefix"_sim.root" $_target
-#mv  $outprefix"_digi.root" $_target
-#mv  $outprefix"_reco.root" $_target
-mv  $outprefix"_pid.root" $_target
-mv  $outprefix"_ana.root" $_target
-mv  $outprefix"_par.root" $_target
-
-
-# move everything to storage
-if [[ $opt == *"moveall"* ]]; then
-    
-    mv  $outprefix"_sim.log" $_target
-    mv  $outprefix"_digi.log" $_target
-    mv  $outprefix"_reco.log" $_target
-    mv  $outprefix"_pid.log" $_target
-    mv  $outprefix"_ana.log" $_target
-    mv  $outprefix"_sim.root" $_target
-    mv  $outprefix"_digi.root" $_target
-    mv  $outprefix"_reco.root" $_target
-    mv  $outprefix"_pid.root" $_target
-    mv  $outprefix"_ana.root" $_target
-    mv  $outprefix"_par.root" $_target
-fi
-
-
-# copy sim output to storage element
-if [[ $opt == *"savesim"* ]]; then
-   cp  $outprefix"_sim.log" $_target
-   cp  $outprefix"_sim.root" $_target
-fi
-
-# copy all output to storage element
-if [[ $opt == *"saveall"* ]]; then
-   cp  $outprefix"_sim.log" $_target
-   cp  $outprefix"_sim.root" $_target
-   cp  $outprefix"_digi.log" $_target
-   cp  $outprefix"_digi.root" $_target
-   cp  $outprefix"_reco.log" $_target
-   cp  $outprefix"_reco.root" $_target
-fi
-
-# if opt contains 'ana', also run analysis
-if [[ $opt == *"ana"* ]]; then
-   root -l -q -b $scripts"/"prod_ana_fast.C\(\"$pidfile\",0,0,$mode,0\) &> $outprefix"_ana.log"
-   cp $outprefix"_ana.log" $_target
-   cp $outprefix"_pid_ana.root" $_target
-fi
-   
-# copy number of generated events from FairFilteredPrimaryGenerator in ...sim.log to ...pid.log
-
-   
-cp  $outprefix"_par.root" $_target
-cp  $outprefix"_pid.log" $_target
-cp  $outprefix"_pid.root" $_target
+# move outputs to target dir
+mv $outprefix"_par.root" $_target
+mv $outprefix"_sim.log" $_target
+mv $outprefix"_sim.root" $_target
+mv $outprefix"_pid.log" $_target
 
 #*** Tidy Up ***
 rm -rf $tmpdir
