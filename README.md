@@ -170,13 +170,13 @@ squeue -u $USER -p shared         # List all current jobs in the shared partitio
 squeue -n <jobname>               # List a job with <jobname> on Snowy cluster
 squeue -j <jobid>                 # Detail of <jobid>
 squeue -j <job_list>              # Details of <job-list>=345,346,348 (comma separated list)
-
-
+```
+----
+```bash
 # scontrol
 scontrol show job <jobid>         # Detail of <jobid>
 scontrol show jobid -dd <jobid>   # List detailed information for a job 
 ```
-----
 
 The examples are given below:
 
@@ -193,20 +193,65 @@ $ cat slurm-3235548.out
 - `scancel`
 - `scontrol`
 
-
+---
 ```bash
-scancel -u $USER			                    # To cancel all the jobs for a user
+# scancel
+scancel -u $USER			              # To cancel all the jobs for a user
 scancel -u $USER -t RUNNING               # To cancel all the Running jobs for a user
 scancel -u $USER -t PENDING               # To cancel all the Pending jobs for a user
-scancel -u $USER --state=pending 			    # terminates all your pending jobs
-scancel -u $USER -n <jobname> -t running 	# kills all your running jobs that are named 'firsttest'
+scancel -u $USER -n <jobname> -t running  # kills all your running jobs that are named 'firsttest'
 
-scancel -n <jobname>                      # To cancel one or more jobs by name
-scancel <jobid>					                  # Cancel a job with <jobid>
+scancel <jobid>					          # To cancel a job with <jobid>
+scancel -n <jobname>                      # To cancel a job with <jobname> (-n, --name)
 scancel -j <job_list>                     # Cancel jobs from a list
-
-scancel -M snowy -i -u <username>         # '-i', ask for confirmation
+scancel -i -u <username>                  # '-i', ask for confirmation
+```
+___
+```bash
+# scontrol
+scontrol hold <jobid>                     # To hold a particular job from being scheduled:
+scontrol release <jobid>                  # To release a particular job to be scheduled:
+scontrol requeue <jobid>                  # To requeue (cancel and rerun) a particular job:
 ```
 
+### (e) - Advance Commands
+
+```bash
+# print job ID, name, and comment
+squeue -o '%25A %10j %10k' -n pndsim
+
+# inspect the partition configuration, access control, limits
+scontrol show partition $name
+
+# partition state summary with no node state details
+sinfo -s       # NODES(A/I/O/T) available/idle/other/total
+
+# show default runtime and runtime limits
+sinfo -o "%9P  %6g %11L %10l %5D %20C"
+
+# show CPUs and memory per node
+sinfo -o "%9P %6g %4c %6z %6m %5D %20C"
+
+# show hardware resources on idle nodes
+sinfo -Nel -t idle
+
+# investigate the job configuration
+scontrol show job $SLURM_JOB_ID | grep Time
+
+# Check if the state of the job using the squeue command:
+squeue --format='%6A %8T %8N %9L %o' --name=sleep
+
+# Use the sinfo command to overview resource limits for nodes in their corresponding Partitions:
+sinfo -o "%9P  %6g %11L %10l %10m %5D %7X %5Y %7Z"
+
+# Use the sinfo command to list runtime limits:
+sinfo -o "%9P %6g %11L %10l %5D %20C"
+
+# Print the number of sockets, cores and threads with sinfo:
+# The -e, --exact option list all available node configurations explicilty.
+
+sinfo -e -o '%9P %4c %8z %8X %8Y %8Z %5D %N'
+
+```
 
 **NOTE:** Everything is good to go.
