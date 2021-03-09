@@ -116,7 +116,7 @@ partition**.
 sbatch --partition=debug ...
 ```
 
-### (b) - Submitting jobs
+### (b) - Submitting Jobs
 
 ```bash
 # sbatch flags
