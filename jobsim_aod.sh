@@ -158,14 +158,8 @@ echo ""
 echo "Started Simulating..."
 root -b -q $scripts"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom\) > $outprefix"_sim.log" 2>&1
 
-echo "Started Digitization..."
-#root -b -q $scripts"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
-
-echo "Started Ideal Reconstruction..."
-#root -b -q $scripts"/"prod_reco.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
-
-echo "Started Ideal PID..."
-#root -b -q $scripts"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
+echo "Started AOD..."
+root -b -q $scripts"/"prod_aod.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
 
 echo "Finished Simulating..."
 echo ""

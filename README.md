@@ -1,5 +1,5 @@
 
-## LOGIN to Virgo
+## Login to Virgo
 
 ```bash
 # proxy jump to Virgo Submit Node
@@ -7,6 +7,27 @@ ssh -J aakram@lxpool.gsi.de aakram@virgo-debian8.hpc.gsi.de
 ssh -J lxpool aakram@virgo-debian8.hpc.gsi.de
 ssh lxpool-virgo-debian8
 ```
+
+## Macros for Virgo
+
+The macros for PandaRoot simulation and analysis are placed in PandaRoot repository at `macro/production/scripts` which are based on `macro/master` macros. Change according to your need. Two methods to use these macros.
+
+```bash
+# staged run (step by step)
+root -l -q -b prod_sim.C\(\"$outprefix\",$nEvts,\"$dec\",$mom\) &> $outprefix"_sim.log" 
+root -l -b -q prod_dig.C\(\"$outprefix\"\) &> $outprefix"_dig.log"
+root -l -b -q prod_rec.C\(\"$outprefix\"\) &> $outprefix"_rec.log"
+root -l -b -q prod_pid.C\(\"$outprefix\"\) &> $outprefix"_pid.log"
+```
+
+```bash
+# analysis-objects-data level (AOD)
+root -l -q -b prod_sim.C\(\"$outprefix\",$nEvts,\"$dec\",$mom\) &> $outprefix"_sim.log" 
+root -l -b -q prod_aod.C\(\"$outprefix\"\) &> $outprefix"_pid.log"
+```
+
+**NOTE**: `prod_aod.C` (`full_complete.C`) is standard Digitazation/Reconstruction/PID macro.
+
 
 ## Tools on Virgo
 
