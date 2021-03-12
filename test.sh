@@ -5,18 +5,17 @@
 # sbatch -a1-20 -- jobsim_complete.sh llbar 10 bkg 
 
 
-
 # *** Account ***
-#SBATCH -A aakram					         # Account Name (--account=g2020014)
+#SBATCH -A panda					         # Account Name (--account=g2020014)
 #SBATCH -J llbar					         # Job Name (--job-name=HitPairs)
 #SBATCH -t 2:00:00					         # Time (DD-HH:MM) (--time=0:59:00)
 #SBATCH -p debug  			                 # Partition (debug/main/long/grid) (--partition=node)
 #S-BATCH -N 2						         # No. of Nodes Requested (--nodes=2)
 
+
 # *** I/O ***
 #SBATCH --get-user-env
-
-#SBATCH -D /lustre/panda/aakram/virgo/data   # Working Directory (--chdir=<directory>) on Lustre
+#S-BATCH -D /lustre/panda/aakram/virgo/data  # Working Directory (--chdir=<directory>) on Lustre
 #SBATCH -o %x-%j.out					     # Standard Output (--output=<file pattern>), %x-%j.out, %j_%N.out
 #SBATCH -e %x-%j.err					     # Standard Error (--error=<file pattern>), %x-%j.err, %j_%N.err
 #SBATCH --mail-type=END					     # Notification Type
@@ -90,7 +89,6 @@ if [[ $simType == "dpm" ]]; then
     dec="dpm"
 fi
 
-_target=$scripts"/data"
 
 #Prepend Absolute Path to DEC File
 if [[ $dec == *".dec"* ]]; then
@@ -105,11 +103,13 @@ if [[ $dec == *".DEC"* ]]; then
   fi
 fi
 
+_target=$scripts"/data"
+
 #Make sure `$_target` Exists
 if [ ! -d $_target ]; then
     mkdir $_target;
 else
-    echo "$_target exists."
+    echo "Target directory at '$_target' exists."
 fi
 
 
@@ -129,7 +129,7 @@ fi
 if [ ! -d $tmpdir ]; then
     mkdir $tmpdir;
 else
-    echo "$tmpdir exists."
+    echo "Temp directory at '$tmpdir' exists."
 fi
 
 
