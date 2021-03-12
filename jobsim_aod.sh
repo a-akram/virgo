@@ -196,7 +196,7 @@ echo $NUMEV >> $outprefix"_pid.log"
 # ls in tmpdir to appear in slurmlog
 ls -ltrh $tmpdir
 
-echo "Copying Files from $tmpdir to $_target"
+echo "Moving Files from '$tmpdir' to '$_target'"
 
 # move outputs to target dir
 mv $outprefix"_par.root" $_target
