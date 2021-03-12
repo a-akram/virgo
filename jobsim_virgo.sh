@@ -38,8 +38,8 @@ fi
 
 #Path to Lustre Shared Storage
 #LUSTRE_HOME=/lustre/$(id -g -n)/$USER
-#LUSTRE_HOME="/lustre/panda/"$USER
-LUSTRE_HOME="/home/adeel/current/2_deepana"
+LUSTRE_HOME="/lustre/panda/"$USER
+#LUSTRE_HOME="/home/adeel/current/2_deepana"
 
 
 #PandaRoot Path
