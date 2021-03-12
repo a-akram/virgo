@@ -8,45 +8,41 @@
 # *** Account ***
 #SBATCH -A panda					         # Account Name (--account=g2020014)
 #SBATCH -J llbar					         # Job Name (--job-name=HitPairs)
-#SBATCH -t 2:00:00					         # Time (DD-HH:MM) (--time=0:59:00)
-#SBATCH -p debug  			                 # Partition (debug/main/long/grid) (--partition=node)
+#SBATCH -t 8:00:00					         # Time (DD-HH:MM) (--time=0:59:00)
+#SBATCH -p main  			                 # Partition (debug/main/long/grid) (--partition=node)
 #S-BATCH -N 2						         # No. of Nodes Requested (--nodes=2)
 
 
 # *** I/O ***
-#SBATCH --get-user-env
-#S-BATCH -D /lustre/panda/aakram/virgo/data  # Working Directory (--chdir=<directory>) on Lustre
-#SBATCH -o %x-%j.out					     # Standard Output (--output=<file pattern>), %x-%j.out, %j_%N.out
-#SBATCH -e %x-%j.err					     # Standard Error (--error=<file pattern>), %x-%j.err, %j_%N.err
+#S-BATCH --get-user-env
+#S-BATCH -D /lustre/panda/aakram/virgo       # Working Directory (--chdir=<directory>), on Lustre (Abs Path)
+#SBATCH -o logs/%x-%j.out				     # Std Output (--output=<file pattern>), on Lustre (Abs/Rel Path)
+#SBATCH -e logs/%x-%j.err					 # Std Error (--error=<file pattern>), on Lustre (Abs/Rel Path)
 #SBATCH --mail-type=END					     # Notification Type
 #SBATCH --mail-user=adeel.chep@gmail.com     # Email for notification
 
+
+echo ""
 echo "== --------------------------------------------"
-echo "== Starting Run at $(date)"			           # 	 
-echo "== SLURM Cluster: ${SLURM_CLUSTER_NAME}"		   # 
-echo "== --------------------------------------------"
-echo "== SLURM CPUS on GPU: ${SLURM_CPUS_PER_GPU}"     # Only set if the --cpus-per-gpu is specified.
-echo "== SLURM CPUS on NODE: ${SLURM_CPUS_ON_NODE}"	   #
-echo "== SLURM CPUS per TASK: ${SLURM_CPUS_PER_TASK}"  # Only set if the --cpus-per-task is specified.
-echo "== --------------------------------------------"
-echo "== SLURM No. of GPUS: ${SLURM_GPUS}"		       # Only set if the -G, --gpus option is specified.
-echo "== SLURM GPUS per NODE: ${SLURM_GPUS_PER_NODE}"  # 
-echo "== SLURM GPUS per TASK: ${SLURM_GPUS_PER_TASK}"  #
-echo "== --------------------------------------------"
+echo "== Starting Run at $(date)"
+echo "== SLURM Cluster: ${SLURM_CLUSTER_NAME}"         # Name of Cluster
 echo "== SLURM Job ID: ${SLURM_JOB_ID}"                # OR SLURM_JOBID. The ID of the job allocation.
 echo "== SLURM Job ACC: ${SLURM_JOB_ACCOUNT}"          # Account name associated of the job allocation. 	
-echo "== SLURM Job NAME: ${SLURM_JOB_NAME}"            # Name of the job.
-echo "== SLURM Node LIST: ${SLURM_JOB_NODELIST}"       # OR SLURM_NODELIST. List of nodes allocated to job.
-echo "== SLURM No. of NODES: ${SLURM_JOB_NUM_NODES}"   # OR SLURM_NNODES. Total #nodes in job's resources.
-echo "== SLURM No. of CPUs/NODE: ${SLURM_JOB_CPUS_PER_NODE}" #  
+echo "== SLURM Job NAME: ${SLURM_JOB_NAME}"            # Interpreted by the srun command.
+echo "== SLURM Job NAME: ${SBATCH_JOB_NAME}"           # Interpreted by the sbatch command. 
+echo "== SLURM Submit Dir. : ${SLURM_SUBMIT_DIR}"	   # Dir. where sbatch was invoked.
+echo "== SLURM Work Dir. : ${SLURM_WORKING_DIR}"	   # Dir. where sbatch was invoked. Flag: -D, --chdir.
 echo "== --------------------------------------------"
-echo "== SLURM Node ID: ${SLURM_NODEID}"                     # ID of the nodes allocated.
-echo "== SLURM Node Name: ${SLURMD_NODENAME}"                # Name of the node running the job script
-echo "== SLURM No. of Tasks: ${SLURM_NTASKS}"		         # OR SLURM_NPROCS. Similar as -n, --ntasks
-echo "== SLURM No. of Tasks/Core: ${SLURM_NTASKS_PER_CORE}"  # Only set if the --ntasks-per-core is specified.
-echo "== SLURM No. of Tasks/Node: ${SLURM_NTASKS_PER_NODE}"  # Only set if the --ntasks-per-node is specified.
-echo "== SLURM Submit Dir. : ${SLURM_SUBMIT_DIR}"	         # Dir. where sbatch was invoked. Flag: -D, --chdir.
+echo "== SLURM CPUS on GPU: ${SLURM_CPUS_PER_GPU}"
+echo "== SLURM CPUS on NODE: ${SLURM_CPUS_ON_NODE}"
+echo "== SLURM CPUS per TASK: ${SLURM_CPUS_PER_TASK}"
 echo "== --------------------------------------------"
+echo "== SLURM No. of GPUS: ${SLURM_GPUS}"
+echo "== SLURM GPUS per NODE: ${SLURM_GPUS_PER_NODE}"
+echo "== SLURM GPUS per TASK: ${SLURM_GPUS_PER_TASK}"
+echo "== --------------------------------------------"
+echo ""
+
 
 #Path to Lustre Shared Storage
 #LUSTRE_HOME=/lustre/$(id -g -n)/$USER
@@ -177,4 +173,4 @@ echo ""
 
 
 # Execute application code
-hostname; uptime; sleep 30; uname -a
+hostname; sleep 200;
