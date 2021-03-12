@@ -6,10 +6,14 @@
 // root  sim_complete.C"(100, "TGeant4",2)"
 
 //pBeam=7.0 -> CM energy at X(3872) mass
-int prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.DEC", Double_t pBeam=1.642) {
+int prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.DEC", Double_t pBeam=1.642, Int_t seed=42) {
     
     std::cout << "FLAGS: " << nEvents << "," << prefix << "," << inputGen << "," << pBeam << std::endl;
-
+    std::cout << "SEED : " << seed << std::endl;
+    
+    // Set Seed for Random Generator
+    gRandom->SetSeed(seed);
+    
     
     /* ************************************************************************
     * TString inputGen =

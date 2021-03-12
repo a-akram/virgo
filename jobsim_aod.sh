@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # *** USAGE *** 
-# sbatch -a<min>-<max> -- jobsim_complete.sh <pref> <nevt> <dec> <mom> <saveall>
-# sbatch -a1-20 -- jobsim_complete.sh bkg 1000 llbar_bkg.dec 1.642 
+# sbatch -a<min>-<max> -- jobsim_complete.sh <prefix> <nEvents> <simType> <pBeam> <opt> <mode>
+# sbatch -a1-20 -- jobsim_complete.sh llbar 1000 bkg 
 
 #SBATCH --get-user-env
 
@@ -21,24 +21,18 @@
 #SBATCH --mail-user=adeel.chep@gmail.com     # Email for notification
 
 
-if [ $# -lt 1 ]; then
-  echo -e "\nJob script for submission of PandaRoot simulation jobs on KRONOS.\n"
-  echo -e "USAGE: sbatch -a<min>-<max> jobsim_complete.sh <prefix> <nevts> <gen> <pbeam> [opt] [mode]\n"
+if [ $# -lt 3 ]; then
+  echo -e "\nMinimum Three Arguments Are Required\n"
+  echo -e "USAGE: sbatch -a<min>-<max> -- jobsim_complete.sh <prefix> <nEvents> <simType>\n"
   echo -e " <min>     : Minimum job number"
   echo -e " <max>     : Maximum job number"
   echo -e " <prefix>  : Prefix of output files"
   echo -e " <nevts>   : Number of events to be simulated"
-  echo -e " <gen>     : Name of EvtGen decay file 'xxx.dec:iniRes'. Keyword 'DPM/FTF/BOX' instead runs other generator"
-  echo -e " <pbeam>   : Momentum of pbar-beam."
-  echo -e " [opt]     : Optional options: if contains 'savesim', sim output is copied as well.";
-  echo -e " [opt]     : Optional options: if contains 'saveall', all output (sim, digi, reco, pid) is copied as well.";
-  echo -e " [opt]     : Optional options: if contains 'ana', runs prod_ana.C in addition.";
-  echo -e " [mode]    : Optional mode number for analysis.\n";
-  echo -e "Example 1 : sbatch -a1-20 jobsim_complete.sh d0sim 1000 D0toKpi.dec 12. ana 10"
-  echo -e "Example 2 : sbatch -a1-20 jobsim_complete.sh dpmbkg 1000 dpm 12."
-  echo -e "Example 3 : sbatch -a1-20 jobsim_complete.sh singleK 1000 box:type[321,1]:p[0.05,8]:tht[0,180]:phi[0,360] 12.\n"
-  echo -e "Example 4 : sbatch -a1-20 jobsim_complete.sh bkg 1000 llbar_bkg.dec 1.642 none 10"
-  
+  echo -e " <simType> : Simulation type e.g. fwp (signal), bkg (non-resonant bkg), dpm (generic bkg)"
+  echo -e " <pbeam>   : Momentum of pbar-beam (GeV/c)."
+  echo -e " [opt]     : Optional options: if contains 'savesim', 'saveall' or 'ana'\n";
+  echo -e "Example 1 : sbatch -a1-20 jobsim_complete.sh sig 1000 fwp"
+  echo -e "Example 2 : sbatch -a1-20 jobsim_complete.sh bkg 1000 dpm\n"
   exit 1
 fi
 
@@ -54,15 +48,16 @@ LUSTRE_HOME="/home/adeel/current/2_deepana"
 
 #Defaults
 prefix=llbar
-nevt=20
+nevt=20          # number of events
 simType="fwp"    # [fwp, bkg, dpm]
-mom=1.642
-seed=0
+mom=1.642        # pbarp with 1.642 GeV/c
+seed=42          # randomize with SLURM_ARRAY_TASK_ID
+
+
 mode=0
-
 opt=""
-run=$SLURM_ARRAY_TASK_ID
 
+run=$SLURM_ARRAY_TASK_ID
 
 #User Input
 if test "$1" != ""; then
@@ -109,7 +104,20 @@ if [[ $simType == "dpm" ]]; then
 fi
 
 
-#Make sure $_target Exists
+#Prepend Absolute Path to DEC File
+if [[ $dec == *".dec"* ]]; then
+  if [[ $dec != \/* ]] ; then
+	dec=$scripts"/"$dec
+  fi
+fi
+
+if [[ $dec == *".DEC"* ]]; then
+  if [[ $dec != \/* ]] ; then
+	dec=$scripts"/"$dec
+  fi
+fi
+
+#Make sure `$_target` Exists
 if [ ! -d $_target ]; then
     mkdir $_target;
 else
@@ -126,6 +134,7 @@ else
     tmpdir="/tmp/"$USER"_"$SLURM_JOB_ID"/"
 	outprefix=$tmpdir$prefix"_"$run
 	pidfile=$outprefix"_pid.root"
+	seed=$seed$run
 fi
 
 #Make sure $tempdir exists
@@ -135,19 +144,22 @@ else
     echo "$tmpdir exists."
 fi
 
+
 # ---------------------------------------------------------------
 #                              Print Flags
 # ---------------------------------------------------------------
 
 echo ""
-echo "Lustre Home      : $LUSTRE_HOME"
-echo "Scripts Directory: $scripts"
-echo "Data Directory   : $_target"
-echo "Output Prefix    : $outprefix"
-echo "Temp Directory   : $tmpdir"
-echo "PID File         : $pidfile"
-echo "Macro Inputs     : $nevt, $outprefix, $dec, $mom"
+echo "Lustre Home    : $LUSTRE_HOME"
+echo "Macro Directory: $scripts"
+echo "Data Directory : $_target"
+echo "Temp Directory : $tmpdir"
+echo "Generator File : $dec"
+echo "PID File       : $pidfile"
+echo "Macro Inputs   :"
+echo "Events: $nevt, OutPrefix: $outprefix, DEC: $dec, pBeam: $mom, Seed: $seed"
 echo ""
+
 
 
 # ---------------------------------------------------------------
@@ -156,13 +168,17 @@ echo ""
 
 echo ""
 echo "Started Simulating..."
-root -b -q $scripts"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom\) > $outprefix"_sim.log" 2>&1
+root -b -q $scripts"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed\) > $outprefix"_sim.log" 2>&1
 
-echo "Started AOD..."
-root -b -q $scripts"/"prod_aod.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
+echo "Started AOD (Digi, Reco, Pid)..."
+#root -b -q $scripts"/"prod_aod.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
 
 echo "Finished Simulating..."
 echo ""
+
+# ---------------------------------------------------------------
+#                            Initiate Analysis
+# ---------------------------------------------------------------
 
 echo "Starting Analysis..."
 #root -b -q $scripts"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
@@ -189,5 +205,5 @@ mv $outprefix"_sim.root" $_target
 mv $outprefix"_pid.log" $_target
 
 #*** Tidy Up ***
-rm -rf $tmpdir
+#rm -rf $tmpdir
 
