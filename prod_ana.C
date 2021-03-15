@@ -1,5 +1,5 @@
-void prod_ana(Int_t nEvents=0, TString prefix="ll")
-{
+int prod_ana(Int_t nEvents=0, TString prefix="ll") {
+
 	// *** the files coming from the simulation
 	bool signal = true;
 	bool isdpm = false;
@@ -18,9 +18,13 @@ void prod_ana(Int_t nEvents=0, TString prefix="ll")
 
 	// *** initialization
 	FairLogger::GetLogger()->SetLogToFile(kFALSE);
-	FairRunAna* fRun = new FairRunAna();
-	FairRuntimeDb* rtdb = fRun->GetRuntimeDb();
-	fRun->SetInputFile(inPidFile);					// fRun->SetSource(new FairFileSource(inPidFile));
+	FairRunAna *fRun = new FairRunAna();
+	FairRuntimeDb *rtdb = fRun->GetRuntimeDb();
+	fRun->SetInputFile(inPidFile);                      // OR
+	//fRun->SetSource(new FairFileSource(inPidFile));   // OR
+	
+	//FairFileSource *fSrc = new FairFileSource(inPidFile); fRun->SetSource(fSrc);
+					
 	
 	// *** setup parameter database 	
 	FairParRootFileIo* parIO = new FairParRootFileIo();
@@ -35,11 +39,12 @@ void prod_ana(Int_t nEvents=0, TString prefix="ll")
 	
 	// *** HERE OUR TASK GOES!
 	PndLLbarAnaTaskRGIS *anaTask = new PndLLbarAnaTaskRGIS();
-	//anaTask->SetBeamMom(beammom);
-	//anaTask->SetIsSig(signal);
 	fRun->AddTask(anaTask);
 	
 	// *** and run analysis
 	fRun->Init(); 
 	fRun->Run(0, nEvents);
+	
+	
+	return 0;
 }

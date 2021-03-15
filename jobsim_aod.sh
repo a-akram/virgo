@@ -16,13 +16,11 @@
 
 
 # *** Account ***
-#S-BATCH --get-user-env                      # Get user login info specified in `--uid` option.
 #SBATCH -A panda					         # Account Name (--account=g2020014)
 #SBATCH -J llbar					         # Job Name (--job-name=HitPairs)
 #SBATCH -t 8:00:00					         # Time (DD-HH:MM) (--time=0:59:00)
 #SBATCH -p main  			                 # Partition (debug/main/long/grid) (--partition=node)
-#S-BATCH -N 2						         # No. of Nodes Requested (--nodes=2)
-#SBATCH -a 1-5                               # Submit a Job Array (--array=<indexes>)
+#SBATCH --array=1-100                        # Submit a Job Array (--array=<indexes>)
 
 
 # *** I/O ***
@@ -61,13 +59,11 @@ LUSTRE_HOME="/lustre/panda/"$USER
 
 #Defaults
 prefix=llbar
-nevt=20          # number of events
+nevt=1000        # number of events
 simType="fwp"    # [fwp, bkg, dpm]
 mom=1.642        # pbarp with 1.642 GeV/c
 seed=42          # randomize with SLURM_ARRAY_TASK_ID
-
-
-mode=0
+mode=0           # for analysis
 opt=""
 
 run=$SLURM_ARRAY_TASK_ID
@@ -192,12 +188,17 @@ echo ""
 # ---------------------------------------------------------------
 #                            Initiate Analysis
 # ---------------------------------------------------------------
+opt="ana"
 
-echo "Starting Analysis..."
-#root -b -q $scripts"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
-#root -b -q $scripts"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
-echo "Finishing Analysis..."
-echo ""
+if [[ $opt == *"ana"* ]]; then
+    echo "Starting Analysis..."
+    #root -b -q $scripts"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
+    #root -b -q $scripts"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
+    root -l -q -b $scripts"/"prod_ana_fast.C\($nevt,\"$pidfile\",0,0,$mode\) &> $outprefix"_pid_ana.log"
+    echo "Finishing Analysis..."
+fi
+
+
 
 # ---------------------------------------------------------------
 #                            Storing Files
@@ -207,7 +208,7 @@ NUMEV=`grep 'Generated Events' $outprefix"_sim.log"`
 echo $NUMEV >> $outprefix"_pid.log"
 
 # ls in tmpdir to appear in slurmlog
-ls -ltrh $tmpdir
+ls -rtlh $tmpdir
 
 echo "Moving Files from '$tmpdir' to '$_target'"
 
@@ -217,9 +218,9 @@ mv $outprefix"_sim.log" $_target
 mv $outprefix"_sim.root" $_target
 mv $outprefix"_pid.log" $_target
 mv $outprefix"_pid.root" $_target
-mv $outprefix"_ana.log" $_target
-mv $outprefix"_ana.root" $_target
+mv $outprefix"_pid_ana.log" $_target
+mv $outprefix"_pid_ana.root" $_target
 
 #*** Tidy Up ***
-# rm -rf $tmpdir
+rm -rf $tmpdir
 

@@ -7,7 +7,7 @@ int prod_aod(Int_t nEvents=10, TString prefix="") {
     {
         std::cout << "USAGE:\n";
         std::cout << "prod_aod.C(<nevts>, <prefix> )\n\n" << std::endl;
-        std::cout << "<pref> : input/output file names prefix\n\n";std::endl;
+        std::cout << "<pref> : input/output file names prefix\n\n" << std::endl;
         return 0;
     }
 
