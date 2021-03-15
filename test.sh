@@ -2,16 +2,17 @@
 
 # *** USAGE ***
 # export LUSTRE_WORK="/lustre/panda/"$USER"/virgo"
-# sbatch --get-user-env [options] -- jobsim_complete.sh [arguments]
-# sbatch --get-user-env -a1-20 -J pndsim -D $LUSTRE_WORK/logs -- $LUSTRE_WORK/script.sh [arguments]
+
+# sbatch --get-user-env [options] -- $LUSTRE_WORK/jobsim_aod.sh [arguments]
+# sbatch --get-user-env -a1-10 -J pndsim -D $LUSTRE_WORK/logs -- $LUSTRE_WORK/jobsim_aod.sh llbar 1000 fwp
 
 # Examples:
 
-# (1)- Give All Important Flags on CLI (-J, -D) with '--' separator
-# sbatch --get-user-env -a1-20 -J pndsim -D $LUSTRE_WORK/logs -- $LUSTRE_WORK/test.sh llbar 10 fwp 
+# (1)- Containerized: Give SBATCH Flags on CLI before '--' separator.
+# sbatch --get-user-env -a1-10 -J pndsim -D $LUSTRE_WORK/logs -- $LUSTRE_WORK/jobsim_aod.sh llbar 1000 fwp
 
-# (2)- Simply submit without Slurm Flags (mind the warning), all SBATCH flags inside Script.
-# sbatch $LUSTRE_WORK/test.sh llbar 10 fwp 
+# (2)- Conventional: Give SBATCH Flags inside script (mind the warning)
+# sbatch $LUSTRE_WORK/jobsim_aod.sh llbar 1000 fwp
 
 
 # *** Account ***

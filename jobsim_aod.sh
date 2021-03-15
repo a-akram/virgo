@@ -2,16 +2,17 @@
 
 # *** USAGE ***
 # export LUSTRE_WORK="/lustre/panda/"$USER"/virgo"
-# sbatch --get-user-env [options] -- jobsim_complete.sh [arguments]
-# sbatch --get-user-env -a1-20 -J pndsim -D $LUSTRE_WORK/logs -- $LUSTRE_WORK/script.sh [arguments]
+
+# sbatch --get-user-env [options] -- $LUSTRE_WORK/jobsim_aod.sh [arguments]
+# sbatch --get-user-env -a1-10 -J pndsim -D $LUSTRE_WORK/logs -- $LUSTRE_WORK/jobsim_aod.sh llbar 1000 fwp
 
 # Examples:
 
-# (1)- Give All Important Flags on CLI (-J, -D) with '--' separator
-# sbatch -a1-20 -J pndsim -D $LUSTRE_WORK/logs -- $LUSTRE_WORK/test.sh llbar 10 fwp 
+# (1)- Containerized: Give SBATCH Flags on CLI before '--' separator.
+# sbatch --get-user-env -a1-10 -J pndsim -D $LUSTRE_WORK/logs -- $LUSTRE_WORK/jobsim_aod.sh llbar 1000 fwp
 
-# (2)- Simply submit without Slurm Flags (mind the warning), all SBATCH flags inside Script.
-# sbatch $LUSTRE_WORK/test.sh llbar 10 fwp 
+# (2)- Conventional: Give SBATCH Flags inside script (mind the warning)
+# sbatch $LUSTRE_WORK/jobsim_aod.sh llbar 1000 fwp
 
 
 # *** Account ***
@@ -183,7 +184,7 @@ echo "Started Simulating..."
 root -b -q $scripts"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed\) > $outprefix"_sim.log" 2>&1
 
 echo "Started AOD (Digi, Reco, Pid)..."
-#root -b -q $scripts"/"prod_aod.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
+root -b -q $scripts"/"prod_aod.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
 
 echo "Finished Simulating..."
 echo ""
@@ -215,7 +216,10 @@ mv $outprefix"_par.root" $_target
 mv $outprefix"_sim.log" $_target
 mv $outprefix"_sim.root" $_target
 mv $outprefix"_pid.log" $_target
+mv $outprefix"_pid.root" $_target
+mv $outprefix"_ana.log" $_target
+mv $outprefix"_ana.root" $_target
 
 #*** Tidy Up ***
-#rm -rf $tmpdir
+# rm -rf $tmpdir
 
