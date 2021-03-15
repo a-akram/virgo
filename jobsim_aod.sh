@@ -1,23 +1,33 @@
 #!/bin/bash
 
-# *** USAGE *** 
-# sbatch -a<min>-<max> -- jobsim_complete.sh <prefix> <nEvents> <simType> <pBeam> <opt> <mode>
-# sbatch -a1-20 -- jobsim_complete.sh llbar 1000 bkg 
+# *** USAGE ***
+# export LUSTRE_WORK="/lustre/panda/"$USER"/virgo"
+# sbatch --get-user-env [options] -- jobsim_complete.sh [arguments]
+# sbatch --get-user-env -a1-20 -J pndsim -D $LUSTRE_WORK/logs -- $LUSTRE_WORK/script.sh [arguments]
+
+# Examples:
+
+# (1)- Give All Important Flags on CLI (-J, -D) with '--' separator
+# sbatch -a1-20 -J pndsim -D $LUSTRE_WORK/logs -- $LUSTRE_WORK/test.sh llbar 10 fwp 
+
+# (2)- Simply submit without Slurm Flags (mind the warning), all SBATCH flags inside Script.
+# sbatch $LUSTRE_WORK/test.sh llbar 10 fwp 
 
 
 # *** Account ***
+#S-BATCH --get-user-env                      # Get user login info specified in `--uid` option.
 #SBATCH -A panda					         # Account Name (--account=g2020014)
 #SBATCH -J llbar					         # Job Name (--job-name=HitPairs)
-#SBATCH -t 2:00:00					         # Time (DD-HH:MM) (--time=0:59:00)
-#SBATCH -p debug  			                 # Partition (debug/main/long/grid) (--partition=node)
+#SBATCH -t 8:00:00					         # Time (DD-HH:MM) (--time=0:59:00)
+#SBATCH -p main  			                 # Partition (debug/main/long/grid) (--partition=node)
 #S-BATCH -N 2						         # No. of Nodes Requested (--nodes=2)
+#SBATCH -a 1-5                               # Submit a Job Array (--array=<indexes>)
 
 
 # *** I/O ***
-#SBATCH --get-user-env  
-#S-BATCH -D /lustre/panda/aakram/virgo/data  # Working Directory (--chdir=<directory>) on Lustre
-#SBATCH -o %x-%j.out					     # Standard Output (--output=<file pattern>), %x-%j.out, %j_%N.out
-#SBATCH -e %x-%j.err					     # Standard Error (--error=<file pattern>), %x-%j.err, %j_%N.err
+#SBATCH -D /lustre/panda/aakram/virgo        # Set Working Directory (--chdir=<directory>), on Lustre (Abs Path)
+#SBATCH -o logs/%x-%j.out				     # Std Output (--output=<file pattern>), on Lustre (Abs/Rel Path)
+#SBATCH -e logs/%x-%j.err					 # Std Error (--error=<file pattern>), on Lustre (Abs/Rel Path)
 #SBATCH --mail-type=END					     # Notification Type
 #SBATCH --mail-user=adeel.chep@gmail.com     # Email for notification
 

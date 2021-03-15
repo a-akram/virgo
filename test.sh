@@ -1,22 +1,31 @@
 #!/bin/bash
 
 # *** USAGE ***
+# export LUSTRE_WORK="/lustre/panda/"$USER"/virgo"
 # sbatch --get-user-env [options] -- jobsim_complete.sh [arguments]
-# sbatch -a<min>-<max> -J llbar -D $LUSTRE_HOME -- jobsim_complete.sh [arguments]
-# sbatch -a1-20 -- jobsim_complete.sh llbar 10 bkg 
+# sbatch --get-user-env -a1-20 -J pndsim -D $LUSTRE_WORK/logs -- $LUSTRE_WORK/script.sh [arguments]
+
+# Examples:
+
+# (1)- Give All Important Flags on CLI (-J, -D) with '--' separator
+# sbatch --get-user-env -a1-20 -J pndsim -D $LUSTRE_WORK/logs -- $LUSTRE_WORK/test.sh llbar 10 fwp 
+
+# (2)- Simply submit without Slurm Flags (mind the warning), all SBATCH flags inside Script.
+# sbatch $LUSTRE_WORK/test.sh llbar 10 fwp 
 
 
 # *** Account ***
+#S-BATCH --get-user-env                      # Get user login info specified in `--uid` option.
 #SBATCH -A panda					         # Account Name (--account=g2020014)
 #SBATCH -J llbar					         # Job Name (--job-name=HitPairs)
 #SBATCH -t 8:00:00					         # Time (DD-HH:MM) (--time=0:59:00)
 #SBATCH -p main  			                 # Partition (debug/main/long/grid) (--partition=node)
 #S-BATCH -N 2						         # No. of Nodes Requested (--nodes=2)
+#SBATCH -a 1-5                               # Submit a Job Array (--array=<indexes>)
 
 
 # *** I/O ***
-#S-BATCH --get-user-env
-#S-BATCH -D /lustre/panda/aakram/virgo       # Working Directory (--chdir=<directory>), on Lustre (Abs Path)
+#SBATCH -D /lustre/panda/aakram/virgo        # Set Working Directory (--chdir=<directory>), on Lustre (Abs Path)
 #SBATCH -o logs/%x-%j.out				     # Std Output (--output=<file pattern>), on Lustre (Abs/Rel Path)
 #SBATCH -e logs/%x-%j.err					 # Std Error (--error=<file pattern>), on Lustre (Abs/Rel Path)
 #SBATCH --mail-type=END					     # Notification Type
@@ -26,13 +35,12 @@
 echo ""
 echo "== --------------------------------------------"
 echo "== Starting Run at $(date)"
-echo "== SLURM Cluster: ${SLURM_CLUSTER_NAME}"         # Name of Cluster
-echo "== SLURM Job ID: ${SLURM_JOB_ID}"                # OR SLURM_JOBID. The ID of the job allocation.
-echo "== SLURM Job ACC: ${SLURM_JOB_ACCOUNT}"          # Account name associated of the job allocation. 	
-echo "== SLURM Job NAME: ${SLURM_JOB_NAME}"            # Interpreted by the srun command.
-echo "== SLURM Job NAME: ${SBATCH_JOB_NAME}"           # Interpreted by the sbatch command. 
-echo "== SLURM Submit Dir. : ${SLURM_SUBMIT_DIR}"	   # Dir. where sbatch was invoked.
-echo "== SLURM Work Dir. : ${SLURM_WORKING_DIR}"	   # Dir. where sbatch was invoked. Flag: -D, --chdir.
+echo "== SLURM Cluster: ${SLURM_CLUSTER_NAME}"
+echo "== SLURM Job ID: ${SLURM_JOB_ID}"
+echo "== SLURM Job ACC: ${SLURM_JOB_ACCOUNT}"
+echo "== SLURM Job NAME: ${SLURM_JOB_NAME}"
+echo "== SLURM Submit Dir. : ${SLURM_SUBMIT_DIR}"
+echo "== SLURM Work Dir. : ${SLURM_WORKING_DIR}"
 echo "== --------------------------------------------"
 echo "== SLURM CPUS on GPU: ${SLURM_CPUS_PER_GPU}"
 echo "== SLURM CPUS on NODE: ${SLURM_CPUS_ON_NODE}"
