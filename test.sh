@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# *** USAGE *** 
-# sbatch -a<min>-<max> -- jobsim_complete.sh <prefix> <nEvents> <simType> <pBeam> <opt> <mode>
+# *** USAGE ***
+# sbatch --get-user-env [options] -- jobsim_complete.sh [arguments]
+# sbatch -a<min>-<max> -J llbar -D $LUSTRE_HOME -- jobsim_complete.sh [arguments]
 # sbatch -a1-20 -- jobsim_complete.sh llbar 10 bkg 
 
 
