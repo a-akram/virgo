@@ -20,13 +20,13 @@
 #SBATCH -J llbar					         # Job Name (--job-name=HitPairs)
 #SBATCH -t 8:00:00					         # Time (DD-HH:MM) (--time=0:59:00)
 #SBATCH -p main  			                 # Partition (debug/main/long/grid) (--partition=node)
-#SBATCH --array=1-100                        # Submit a Job Array (--array=<indexes>)
+#SBATCH --array=1-5                        # Submit a Job Array (--array=<indexes>)
 
 
 # *** I/O ***
 #SBATCH -D /lustre/panda/aakram/virgo        # Set Working Directory (--chdir=<directory>), on Lustre (Abs Path)
-#SBATCH -o logs/%x-%j.out				     # Std Output (--output=<file pattern>), on Lustre (Abs/Rel Path)
-#SBATCH -e logs/%x-%j.err					 # Std Error (--error=<file pattern>), on Lustre (Abs/Rel Path)
+#SBATCH -o %x-%j.out				     # Std Output (--output=<file pattern>), on Lustre (Abs/Rel Path)
+#SBATCH -e %x-%j.err					 # Std Error (--error=<file pattern>), on Lustre (Abs/Rel Path)
 #SBATCH --mail-type=END					     # Notification Type
 #SBATCH --mail-user=adeel.chep@gmail.com     # Email for notification
 
@@ -54,17 +54,18 @@ LUSTRE_HOME="/lustre/panda/"$USER
 
 
 #PandaRoot Path
-. "/lustre/panda/aakram/pandaroot/build-oct19/config.sh"
+. "/lustre/panda/aakram/fair/oct19/build/config.sh"
 
+echo "";
 
 #Defaults
-prefix=llbar
+prefix=llbar     # output file naming
 nevt=1000        # number of events
 simType="fwp"    # [fwp, bkg, dpm]
 mom=1.642        # pbarp with 1.642 GeV/c
-seed=42          # randomize with SLURM_ARRAY_TASK_ID
-mode=0           # for analysis
-opt=""
+seed=$RANDOM     # random seed for simulation
+mode=0           # mode for analysis
+opt="ana"        # use opt to do specific tasks e.g. ana for analysis etc.
 
 run=$SLURM_ARRAY_TASK_ID
 
@@ -130,7 +131,7 @@ fi
 if [ ! -d $_target ]; then
     mkdir $_target;
 else
-    echo "$_target exists."
+    echo "The target dire. at '$_target' exists."
 fi
 
 
@@ -150,7 +151,7 @@ fi
 if [ ! -d $tmpdir ]; then
     mkdir $tmpdir;
 else
-    echo "$tmpdir exists."
+    echo "The temporary dir. at '$tmpdir' exists."
 fi
 
 
@@ -165,8 +166,9 @@ echo "Data Directory : $_target"
 echo "Temp Directory : $tmpdir"
 echo "Generator File : $dec"
 echo "PID File       : $pidfile"
-echo "Macro Inputs   :"
-echo "Events: $nevt, OutPrefix: $outprefix, DEC: $dec, pBeam: $mom, Seed: $seed"
+echo ""
+echo "Macro Inputs:"
+echo "Events: '$nevt', OutPrefix: '$outprefix', DEC: '$dec', pBeam: '$mom', Seed: '$seed'"
 echo ""
 
 
@@ -188,13 +190,18 @@ echo ""
 # ---------------------------------------------------------------
 #                            Initiate Analysis
 # ---------------------------------------------------------------
-opt="ana"
 
 if [[ $opt == *"ana"* ]]; then
+    
     echo "Starting Analysis..."
     #root -b -q $scripts"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
     #root -b -q $scripts"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
-    root -l -q -b $scripts"/"prod_ana_fast.C\($nevt,\"$pidfile\",0,0,$mode\) &> $outprefix"_pid_ana.log"
+    root -l -q -b $scripts"/"prod_ana_fast.C\($nevt,\"$pidfile\",0,0,$mode\) &> $outprefix"_ana.log"
+    
+    mv $outprefix"_ana.log" $_target
+    #mv $outprefix"_ana.root" $_target
+    mv $outprefix"_pid_ana.root" $_target
+    
     echo "Finishing Analysis..."
 fi
 
@@ -208,19 +215,19 @@ NUMEV=`grep 'Generated Events' $outprefix"_sim.log"`
 echo $NUMEV >> $outprefix"_pid.log"
 
 # ls in tmpdir to appear in slurmlog
-ls -rtlh $tmpdir
+#ls -rtlh $tmpdir
 
 echo "Moving Files from '$tmpdir' to '$_target'"
 
 # move outputs to target dir
+
 mv $outprefix"_par.root" $_target
 mv $outprefix"_sim.log" $_target
 mv $outprefix"_sim.root" $_target
 mv $outprefix"_pid.log" $_target
 mv $outprefix"_pid.root" $_target
-mv $outprefix"_pid_ana.log" $_target
-mv $outprefix"_pid_ana.root" $_target
 
 #*** Tidy Up ***
 rm -rf $tmpdir
 
+echo "The Script has Finished wit SLURM_JOB_ID: $SLURM_JOB_ID."

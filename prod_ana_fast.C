@@ -23,7 +23,7 @@ int prod_ana_fast(Int_t nEvents=0, TString prefix="ll", int from=1, int to=1, in
 		cout << "   <from>     : first run number\n";
 		cout << "   <to>       : last run number\n";
 		cout << "   [mode]     : arbitrary mode number; default: 0\n";
-		return;
+		return 0;
 	}
 	
 	double   Mom      = 1.642;
