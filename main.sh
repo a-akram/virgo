@@ -16,64 +16,56 @@
 
 
 # *** Account ***
-#S-BATCH --get-user-env                      # Get user login info specified in `--uid` option.
 #SBATCH -A panda					         # Account Name (--account=g2020014)
 #SBATCH -J llbar					         # Job Name (--job-name=HitPairs)
 #SBATCH -t 8:00:00					         # Time (DD-HH:MM) (--time=0:59:00)
 #SBATCH -p main  			                 # Partition (debug/main/long/grid) (--partition=node)
-#S-BATCH -N 2						         # No. of Nodes Requested (--nodes=2)
-#SBATCH -a 1-5                               # Submit a Job Array (--array=<indexes>)
+#SBATCH --array=1-5                          # Submit a Job Array (--array=<indexes>)
 
 
 # *** I/O ***
 #SBATCH -D /lustre/panda/aakram/virgo        # Set Working Directory (--chdir=<directory>), on Lustre (Abs Path)
-#SBATCH -o logs/%x-%j.out				     # Std Output (--output=<file pattern>), on Lustre (Abs/Rel Path)
-#SBATCH -e logs/%x-%j.err					 # Std Error (--error=<file pattern>), on Lustre (Abs/Rel Path)
+#SBATCH -o %x-%j.out				         # Std Output (--output=<file pattern>), on Lustre (Abs/Rel Path)
+#SBATCH -e %x-%j.err					     # Std Error (--error=<file pattern>), on Lustre (Abs/Rel Path)
 #SBATCH --mail-type=END					     # Notification Type
 #SBATCH --mail-user=adeel.chep@gmail.com     # Email for notification
 
 
-echo ""
-echo "== --------------------------------------------"
-echo "== Starting Run at $(date)"
-echo "== SLURM Cluster: ${SLURM_CLUSTER_NAME}"
-echo "== SLURM Job ID: ${SLURM_JOB_ID}"
-echo "== SLURM Job ACC: ${SLURM_JOB_ACCOUNT}"
-echo "== SLURM Job NAME: ${SLURM_JOB_NAME}"
-echo "== SLURM Submit Dir. : ${SLURM_SUBMIT_DIR}"
-echo "== SLURM Work Dir. : ${SLURM_WORKING_DIR}"
-echo "== --------------------------------------------"
-echo "== SLURM CPUS on GPU: ${SLURM_CPUS_PER_GPU}"
-echo "== SLURM CPUS on NODE: ${SLURM_CPUS_ON_NODE}"
-echo "== SLURM CPUS per TASK: ${SLURM_CPUS_PER_TASK}"
-echo "== --------------------------------------------"
-echo "== SLURM No. of GPUS: ${SLURM_GPUS}"
-echo "== SLURM GPUS per NODE: ${SLURM_GPUS_PER_NODE}"
-echo "== SLURM GPUS per TASK: ${SLURM_GPUS_PER_TASK}"
-echo "== --------------------------------------------"
-echo ""
+if [ $# -lt 3 ]; then
+  echo -e "\nMinimum Three Arguments Are Required\n"
+  echo -e "USAGE: sbatch -a<min>-<max> -- jobsim_complete.sh <prefix> <nEvents> <simType>\n"
+  echo -e " <min>     : Minimum job number"
+  echo -e " <max>     : Maximum job number"
+  echo -e " <prefix>  : Prefix of output files"
+  echo -e " <nevts>   : Number of events to be simulated"
+  echo -e " <simType> : Simulation type e.g. fwp (signal), bkg (non-resonant bkg), dpm (generic bkg)"
+  echo -e " <pbeam>   : Momentum of pbar-beam (GeV/c)."
+  echo -e " [opt]     : Optional options: if contains 'savesim', 'saveall' or 'ana'\n";
+  echo -e "Example 1 : sbatch -a1-20 jobsim_complete.sh sig 1000 fwp"
+  echo -e "Example 2 : sbatch -a1-20 jobsim_complete.sh bkg 1000 dpm\n"
+  exit 1
+fi
 
 
 #Path to Lustre Shared Storage
 #LUSTRE_HOME=/lustre/$(id -g -n)/$USER
 LUSTRE_HOME="/lustre/panda/"$USER
-
+#LUSTRE_HOME="/home/adeel/current/2_deepana"
 
 
 #PandaRoot Path
-. "/lustre/panda/aakram/pandaroot/build-oct19/config.sh"
+. "/lustre/panda/aakram/fair/oct19/build/config.sh"
 
+echo "";
 
 #Defaults
-prefix=llbar
-nevt=20          # number of events
+prefix=llbar     # output file naming
+nevt=1000        # number of events
 simType="fwp"    # [fwp, bkg, dpm]
 mom=1.642        # pbarp with 1.642 GeV/c
-seed=42          # randomize with SLURM_ARRAY_TASK_ID
-
-
-mode=0
-opt=""
+seed=$RANDOM     # random seed for simulation
+mode=0           # mode for analysis
+opt="ana"        # use opt to do specific tasks e.g. ana for analysis etc.
 
 run=$SLURM_ARRAY_TASK_ID
 
@@ -135,13 +127,11 @@ if [[ $dec == *".DEC"* ]]; then
   fi
 fi
 
-_target=$scripts"/data"
-
 #Make sure `$_target` Exists
 if [ ! -d $_target ]; then
     mkdir $_target;
 else
-    echo "Target directory at '$_target' exists."
+    echo "The target dire. at '$_target' exists."
 fi
 
 
@@ -161,7 +151,7 @@ fi
 if [ ! -d $tmpdir ]; then
     mkdir $tmpdir;
 else
-    echo "Temp directory at '$tmpdir' exists."
+    echo "The temporary dir. at '$tmpdir' exists."
 fi
 
 
@@ -176,11 +166,12 @@ echo "Data Directory : $_target"
 echo "Temp Directory : $tmpdir"
 echo "Generator File : $dec"
 echo "PID File       : $pidfile"
-echo "Macro Inputs   :"
-echo "Events: $nevt, OutPrefix: $outprefix, DEC: $dec, pBeam: $mom, Seed: $seed"
 echo ""
-
+echo "Macro Inputs:"
+echo "Events: '$nevt', OutPrefix: '$outprefix', DEC: '$dec', pBeam: '$mom', Seed: '$seed'"
+echo ""
 
 
 # Execute application code
 hostname; sleep 200;
+

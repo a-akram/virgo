@@ -154,8 +154,14 @@ echo ""
 echo "Started Simulating..."
 root -b -q $scripts"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed\) > $outprefix"_sim.log" 2>&1
 
-echo "Started AOD (Digi, Reco, Pid)..."
-root -b -q $scripts"/"prod_aod.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
+echo "Started Digitization..."
+root -b -q $scripts"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
+
+echo "Started Ideal Reconstruction..."
+root -b -q $scripts"/"prod_reco.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
+
+echo "Started Ideal PID..."
+root -b -q $scripts"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
 
 echo "Finished Simulating..."
 echo ""
@@ -163,7 +169,6 @@ echo ""
 # ---------------------------------------------------------------
 #                            Initiate Analysis
 # ---------------------------------------------------------------
-
 if [[ $opt == *"ana"* ]]; then
     
     echo "Starting Analysis..."
@@ -186,18 +191,24 @@ NUMEV=`grep 'Generated Events' $outprefix"_sim.log"`
 echo $NUMEV >> $outprefix"_pid.log"
 
 # ls in tmpdir to appear in slurmlog
-#ls -rtlh $tmpdir
+# ls -ltrh $tmpdir
 
 echo "Moving Files from '$tmpdir' to '$_target'"
 
-# move outputs to target dir
+# move root files to target dir
 mv $outprefix"_par.root" $_target
 mv $outprefix"_sim.log" $_target
 mv $outprefix"_sim.root" $_target
+mv $outprefix"_digi.log" $_target
+mv $outprefix"_digi.root" $_target
+mv $outprefix"_reco.log" $_target
+mv $outprefix"_reco.root" $_target
 mv $outprefix"_pid.log" $_target
 mv $outprefix"_pid.root" $_target
+
 
 #*** Tidy Up ***
 rm -rf $tmpdir
 
 echo "The Script has Finished wit SLURM_JOB_ID: $SLURM_JOB_ID."
+

@@ -1,9 +1,10 @@
+#!/bin/bash
 
-# *** Export Variables ***
+# Export Variables
 export LUSTRE_HOME="/lustre/panda/"$USER
 export SLURM_SUBMIT_DIR=$LUSTRE_HOME"/virgo"
 export SLURM_WORKING_DIR=$LUSTRE_HOME"/virgo"
-
+export SLURM_JOB_NAME="stdsig"
 
 # *** Submit Jobs ***
 
@@ -17,7 +18,7 @@ export SLURM_WORKING_DIR=$LUSTRE_HOME"/virgo"
 # sbatch --get-user-env -t 4:00:00 -a1-10 -o '%x-%j.out' -e '%x-%j.err' -J run1 -D $SLURM_WORKING_DIR -- $SLURM_WORKING_DIR/jobsim_aod.sh llbar 1000 fwp
 
 # Example 4: (USING)
-sbatch --get-user-env -t 4:00:00 -a1-10 -o '%x-%j.out' -e '%x-%j.err' -J run1 --comment '10K' --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_aod.sh llbar 10 fwp
+sbatch --get-user-env -t 4:00:00 -a1-10 -o '%x-%j.out' -e '%x-%j.err' -J $SLURM_JOB_NAME --comment '1m-fwp' --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_aod.sh llbar 10 fwp
 
 
 # *** Monitor Jobs ***
