@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # *** Cluster USAGE ***
-# sbatch [options] -- jobsim_complete.sh <prefix> <events> <dec> <pbeam> [opt] [mode]
+# sbatch [options] -- jobsim_aod.sh <prefix> <events> <dec> <pbeam> [opt] [mode]
 
 # *** Local USAGE ***
-# ./jobsim_complete.sh <prefix> <events> <dec>
-# ./jobsim_complete.sh llbar 100 llbar_fwp.DEC
+# ./jobsim_aod.sh <prefix> <events> <dec>
+# ./jobsim_aod.sh llbar 100 llbar_fwp.DEC
 
 if [ $# -lt 3 ]; then
   echo -e "\nMinimum Three Arguments Are Required\n"
@@ -159,73 +159,8 @@ echo -e "Seed      : $seed"
 echo ""
 echo -e "PID File  : $pidfile"
 
-
 # Terminate Script for Testing.
 # exit 0;
 
-
-# ---------------------------------------------------------------
-#                            Initiate Simulaton
-# ---------------------------------------------------------------
-echo ""
-echo "Started Simulating..."
-root -b -q $scripts"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed\) > $outprefix"_sim.log" 2>&1
-
-echo "Started Digitization..."
-root -b -q $scripts"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
-
-echo "Started Ideal Reconstruction..."
-root -b -q $scripts"/"prod_reco.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
-
-echo "Started Ideal PID..."
-root -b -q $scripts"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
-
-echo "Finished Simulating..."
-echo ""
-
-# ---------------------------------------------------------------
-#                            Initiate Analysis
-# ---------------------------------------------------------------
-if [[ $opt == *"ana"* ]]; then
-    
-    echo "Starting Analysis..."
-    root -b -q $scripts"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
-    #root -b -q $scripts"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
-    #root -l -q -b $scripts"/"prod_ana_fast.C\($nevt,\"$pidfile\",0,0,$mode\) &> $outprefix"_ana.log"
-    
-    mv $outprefix"_ana.log" $_target
-    mv $outprefix"_ana.root" $_target
-    #mv $outprefix"_pid_ana.root" $_target
-    
-    echo "Finishing Analysis..."
-fi
-
-# ---------------------------------------------------------------
-#                            Storing Files
-# ---------------------------------------------------------------
-
-NUMEV=`grep 'Generated Events' $outprefix"_sim.log"`
-echo $NUMEV >> $outprefix"_pid.log"
-
-# ls in tmpdir to appear in slurmlog
-# ls -ltrh $tmpdir
-
-echo "Moving Files from '$tmpdir' to '$_target'"
-
-# move root files to target dir
-mv $outprefix"_par.root" $_target
-#mv $outprefix"_sim.log" $_target
-mv $outprefix"_sim.root" $_target
-#mv $outprefix"_digi.log" $_target
-#mv $outprefix"_digi.root" $_target
-#mv $outprefix"_reco.log" $_target
-#mv $outprefix"_reco.root" $_target
-#mv $outprefix"_pid.log" $_target
-mv $outprefix"_pid.root" $_target
-
-
-#*** Tidy Up ***
-rm -rf $tmpdir
-
-echo "The Script has Finished wit SLURM_JOB_ID: $SLURM_JOB_ID."
-
+# Execute application code
+hostname; sleep 200;

@@ -3,8 +3,8 @@
 // root  full_complete.C  or in root session root >.x  full_complete.C
 int prod_aod(Int_t nEvents=10, TString prefix="") {
 
-    if (prefix=="") 
-    {
+    if (prefix=="") {
+        
         std::cout << "USAGE:\n";
         std::cout << "prod_aod.C(<nevts>, <prefix> )\n\n" << std::endl;
         std::cout << "<pref> : input/output file names prefix\n\n" << std::endl;
@@ -38,7 +38,5 @@ int prod_aod(Int_t nEvents=10, TString prefix="") {
     fRun->Init();
     fRun->Run(0, nEvents);
     fRun->Finish();
-
-
     return 0;
 }
