@@ -11,7 +11,7 @@ bool CheckFile(TString fn) {
     return fileok;
 }
 
-int prod_ana_fast(Int_t nEvents=0, TString prefix="ll", int from=1, int to=1, int mode=0) {
+int prod_ana_multi(Int_t nEvents=0, TString prefix="ll", int from=1, int to=1, int mode=0) {
 
  	if (prefix=="") 
 	{
@@ -87,8 +87,6 @@ int prod_ana_fast(Int_t nEvents=0, TString prefix="ll", int from=1, int to=1, in
 
 	// *** and run analysis
 	fRun->Init(); 
-	fRun->Run(0, nEvents);	
-	
-	
+	fRun->Run(0, nEvents);
 	return 0;
 }

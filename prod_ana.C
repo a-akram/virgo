@@ -1,4 +1,4 @@
-int prod_ana(Int_t nEvents=0, TString prefix="ll") {
+int prod_ana(Int_t nEvents=10, TString prefix="ll") {
 
 	// *** the files coming from the simulation
 	bool signal = true;
@@ -44,12 +44,5 @@ int prod_ana(Int_t nEvents=0, TString prefix="ll") {
 	// *** and run analysis
 	fRun->Init(); 
 	fRun->Run(0, nEvents);
-	
-	
-	// Delete Pointers etc
-	delete anaTask;
-	anaTask = nullptr;
-
-
 	return 0;
 }

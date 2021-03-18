@@ -1,7 +1,7 @@
 // Macro for running Panda digitization, reconstruction and pid tasks
 // to run the macro:
 // root  full_complete.C  or in root session root >.x  full_complete.C
-int prod_aod(Int_t nEvents=10, TString prefix="") {
+int prod_aod(Int_t nEvents=10, TString prefix="ll") {
 
     if (prefix=="") {
         

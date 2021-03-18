@@ -34,7 +34,7 @@ echo -e "\n";
 
 # Defaults
 prefix=llbar
-nevt=1000
+nevt=10
 dec="llbar_fwp.DEC"
 pbeam=1.642
 seed=$RANDOM
@@ -99,7 +99,7 @@ echo -e "PID File  : $pidfile"
 
 
 # Terminate Script for Testing.
-exit 0;
+# exit 0;
 
 
 # ---------------------------------------------------------------
@@ -107,18 +107,18 @@ exit 0;
 # ---------------------------------------------------------------
 echo ""
 echo "Started Simulating..."
-root -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed\) > $outprefix"_sim.log" 2>&1
+root -l -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed\) > $outprefix"_sim.log" 2>&1
 NUMEV=`grep 'Generated Events' $outprefix"_sim.log"`
 
 echo "Started AOD (Digi, Reco, Pid)..."
-root -b -q $nyx"/"prod_aod.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1
+root -l -b -q $nyx"/"prod_aod.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1
 echo $NUMEV >> $outprefix"_pid.log"
 echo "Finished Simulating..."
 echo ""
 
 echo "Starting Analysis..."
-root -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
-#root -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
+#root -l -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
+root -l -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
 echo "Finishing Analysis..."
 
 #*** Tidy Up ***
