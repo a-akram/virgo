@@ -30,6 +30,8 @@ LUSTRE_HOME="/lustre/panda/"$USER
 
 #PandaRoot Path
 . "/lustre/panda/aakram/fair/oct19/build/config.sh"
+#. "/lustre/panda/aakram/fair/dev/build/config.sh"
+
 
 echo "";
 
@@ -40,7 +42,7 @@ simType="fwp"    # [fwp, bkg, dpm]
 mom=1.642        # pbarp with 1.642 GeV/c
 seed=$RANDOM     # random seed for simulation
 mode=0           # mode for analysis
-opt="ana"        # use opt to do specific tasks e.g. ana for analysis etc.
+opt=""        # use opt to do specific tasks e.g. ana for analysis etc.
 
 run=$SLURM_ARRAY_TASK_ID
 
@@ -172,13 +174,13 @@ echo ""
 if [[ $opt == *"ana"* ]]; then
     
     echo "Starting Analysis..."
-    #root -b -q $scripts"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
+    root -b -q $scripts"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
     #root -b -q $scripts"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
-    root -l -q -b $scripts"/"prod_ana_fast.C\($nevt,\"$pidfile\",0,0,$mode\) &> $outprefix"_ana.log"
+    #root -l -q -b $scripts"/"prod_ana_fast.C\($nevt,\"$pidfile\",0,0,$mode\) &> $outprefix"_ana.log"
     
     mv $outprefix"_ana.log" $_target
-    #mv $outprefix"_ana.root" $_target
-    mv $outprefix"_pid_ana.root" $_target
+    mv $outprefix"_ana.root" $_target
+    #mv $outprefix"_pid_ana.root" $_target
     
     echo "Finishing Analysis..."
 fi
@@ -197,13 +199,13 @@ echo "Moving Files from '$tmpdir' to '$_target'"
 
 # move root files to target dir
 mv $outprefix"_par.root" $_target
-mv $outprefix"_sim.log" $_target
+#mv $outprefix"_sim.log" $_target
 mv $outprefix"_sim.root" $_target
-mv $outprefix"_digi.log" $_target
-mv $outprefix"_digi.root" $_target
-mv $outprefix"_reco.log" $_target
-mv $outprefix"_reco.root" $_target
-mv $outprefix"_pid.log" $_target
+#mv $outprefix"_digi.log" $_target
+#mv $outprefix"_digi.root" $_target
+#mv $outprefix"_reco.log" $_target
+#mv $outprefix"_reco.root" $_target
+#mv $outprefix"_pid.log" $_target
 mv $outprefix"_pid.root" $_target
 
 

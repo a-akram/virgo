@@ -46,5 +46,10 @@ int prod_ana(Int_t nEvents=0, TString prefix="ll") {
 	fRun->Run(0, nEvents);
 	
 	
+	// Delete Pointers etc
+	delete anaTask;
+	anaTask = nullptr;
+
+
 	return 0;
 }
