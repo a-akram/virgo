@@ -169,16 +169,16 @@ echo -e "PID File  : $pidfile"
 # ---------------------------------------------------------------
 echo ""
 echo "Started Simulating..."
-root -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed\) > $outprefix"_sim.log" 2>&1
+root -l -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed\) > $outprefix"_sim.log" 2>&1
 
 echo "Started Digitization..."
-root -b -q $nyx"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
+root -l -b -q $nyx"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
 
 echo "Started Ideal Reconstruction..."
-root -b -q $nyx"/"prod_reco.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
+root -l -b -q $nyx"/"prod_reco.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
 
 echo "Started Ideal PID..."
-root -b -q $nyx"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
+root -l -b -q $nyx"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
 
 echo "Finished Simulating..."
 echo ""
@@ -189,13 +189,13 @@ echo ""
 if [[ $opt == *"ana"* ]]; then
     
     echo "Starting Analysis..."
-    root -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
-    #root -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
-    #root -l -q -b $nyx"/"prod_ana_fast.C\($nevt,\"$pidfile\",0,0,$mode\) &> $outprefix"_ana.log"
+    #root -l -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
+    #root -l -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
+    root -l -q -b $nyx"/"prod_ana_multi.C\($nevt,\"$pidfile\",0,0,$mode\) &> $outprefix"_ana.log"
     
+    #mv $outprefix"_ana.root" $_target
+    mv $outprefix"_pid_ana.root" $_target
     mv $outprefix"_ana.log" $_target
-    mv $outprefix"_ana.root" $_target
-    #mv $outprefix"_pid_ana.root" $_target
     
     echo "Finishing Analysis..."
 fi
