@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # *** Cluster USAGE ***
-# sbatch [options] -- jobsim_aod.sh <prefix> <events> <dec> <pbeam> [opt] [mode]
+# sbatch [options] -- jobsim_complete.sh <prefix> <events> <dec> <pbeam> [opt] [mode]
 
 # *** Local USAGE ***
-# ./jobsim_aod.sh <prefix> <events> <dec>
-# ./jobsim_aod.sh llbar 100 llbar_fwp.DEC
+# ./jobsim_complete.sh <prefix> <events> <dec>
+# ./jobsim_complete.sh llbar 100 llbar_fwp.DEC
 
 if [ $# -lt 3 ]; then
   echo -e "\nMinimum Three Arguments Are Required\n"
@@ -32,12 +32,13 @@ LUSTRE_HOME="/lustre/panda/"$USER
 nyx=$LUSTRE_HOME"/virgo"
 
 # Data Storage
-_target=$nyx"/data"
+#_target=$nyx"/data"
 
 
 # Init PandaRoot
-# . $LUSTRE_HOME"/fair/dev/build/config.sh"
-. $LUSTRE_HOME"/fair/oct19/build/config.sh"
+#. $LUSTRE_HOME"/fair/oct19/build/config.sh"
+. $LUSTRE_HOME"/fair/dev/build/config.sh"
+
 
 echo -e "\n";
 
@@ -78,24 +79,44 @@ if test "$6" != ""; then
 fi
 
 
-# Get DEC if Keywords Given
+# Get .DEC if Only Keywords [fwp,bkg,dpm] Are Given.
+# e.g. ./jobsim_complete.sh llbar 100 fwp 1.642
+
 if [[ $dec == "fwp" ]]; then
-    _target=$nyx"/"$dec
+    _target=$nyx"/data/"$dec
     dec="llbar_fwp.DEC"
 fi
 
 if [[ $dec == "bkg" ]]; then
-    _target=$nyx"/"$dec
+    _target=$nyx"/data/"$dec
     dec="llbar_bkg.DEC"
 fi 
 
 if [[ $dec == "dpm" ]]; then
-    _target=$nyx"/"$dec
+    _target=$nyx"/data/"$dec
     dec="dpm"
 fi
 
 
-# Prepend Abs. Path to DEC File
+# Deduce Signal/Bkg from .DEC & Create Storage Accordingly.
+# e.g. ./jobsim_complete.sh llbar 100 llbar_fwp.DEC 1.642
+
+if [[ $dec == *"fwp"* ]]; then
+    IsSignal=true
+    _target=$nyx"/data/fwp"
+fi
+
+if [[ $dec == *"bkg"* ]]; then
+    IsSignal=false
+    _target=$nyx"/data/bkg"
+fi
+
+if [[ $dec == *"dpm"* ]]; then
+    IsSignal=false
+    _target=$nyx"/data/dpm"
+fi
+
+# Prepend Absolute Path to .DEC File
 if [[ $dec == *".dec"* ]]; then
   if [[ $dec != \/* ]] ; then
 	dec=$nyx"/"$dec
@@ -156,11 +177,11 @@ echo -e "Prefix    : $outprefix"
 echo -e "Decay     : $dec"
 echo -e "pBeam     : $mom"
 echo -e "Seed      : $seed"
-echo ""
+echo -e "Is Signal : $IsSignal"
 echo -e "PID File  : $pidfile"
 
 # Terminate Script for Testing.
-# exit 0;
+exit 0;
 
 # Execute application code
 hostname; sleep 200;

@@ -27,8 +27,9 @@ _target=$nyx"/data"
 
 
 # Init PandaRoot
-# . $HOME"/fair/pandaroot_dev/build-March2021/config.sh"
-. $HOME"/fair/pandaroot/build-oct19/config.sh"
+#. $HOME"/fair/pandaroot/build-oct19/config.sh"
+. $HOME"/fair/pandaroot_dev/build-March2021/config.sh"
+
 
 echo -e "\n";
 
@@ -54,6 +55,26 @@ fi
 
 if test "$4" != ""; then
   mom=$4
+fi
+
+
+
+# Deduce Signal/Bkg from .DEC & Create Storage Accordingly.
+# e.g. ./jobsim_complete.sh llbar 100 llbar_fwp.DEC 1.642
+
+if [[ $dec == *"fwp"* ]]; then
+    IsSignal=true
+    _target=$nyx"/data/fwp"
+fi
+
+if [[ $dec == *"bkg"* ]]; then
+    IsSignal=false
+    _target=$nyx"/data/bkg"
+fi
+
+if [[ $dec == *"dpm"* ]]; then
+    IsSignal=false
+    _target=$nyx"/data/dpm"
 fi
 
 
@@ -88,18 +109,18 @@ echo "Working Dir. : $nyx"
 echo "Temp Dir.    : $tmpdir"
 echo "Target Dir.  : $_target"
 echo ""
-echo -e "Macro     :"
+echo -e "--Macro--"
 echo -e "Events    : $nevt"
 echo -e "Prefix    : $outprefix"
 echo -e "Decay     : $dec"
 echo -e "pBeam     : $mom"
 echo -e "Seed      : $seed"
-echo ""
+echo -e "Is Signal : $IsSignal"
 echo -e "PID File  : $pidfile"
 
 
 # Terminate Script for Testing.
-# exit 0;
+exit 0;
 
 
 # ---------------------------------------------------------------
@@ -118,7 +139,7 @@ echo ""
 
 echo "Starting Analysis..."
 #root -l -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
-root -l -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
+root -l -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\",$IsSignal\) > $outprefix"_ana.log" 2>&1
 echo "Finishing Analysis..."
 
 #*** Tidy Up ***

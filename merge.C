@@ -1,5 +1,7 @@
-void merge(TString ntp="", TString fout="", TString f1="", TString f2="", TString f3="", TString f4="", TString f5="")
-{
+void merge(TString ntp="ntpBestPbarP", TString fout="BestPbarP.root", TString f1="fwp_*_ana.root", TString f2="", TString f3="", TString f4="", TString f5="") {
+
+    // USAGE: root -l -b -q 'merge.C("ntpBestPbarP","BestPbarP.root","fwp_*_ana.root")'
+    
 	if (ntp=="" || fout=="" || f1=="")
 	{
 		cout <<"\nmerge : merges a TTree with certain name from different files to one.\n\n"; 

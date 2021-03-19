@@ -10,6 +10,7 @@ core*
 *.out
 *.err
 build
+data
 1_fwp
 2_bkg
 3_dpm

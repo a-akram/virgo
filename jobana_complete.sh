@@ -52,7 +52,8 @@ fi
 outprefix=$_target$prefix"_"$run
 pidfile=$outprefix"_pid.root"
 
-root -l -q -b $nyx"/"prod_ana_fast.C\(0,\"$pidfile\",0,0,$mode\) &> $outprefix"_ana.log"
+root -l -q -b $nyx"/"prod_ana_multi.C\($nevt,\"$pidfile\",0,0,$mode\) &> $outprefix"_pid_ana.log"
 
+ mv $outprefix"_pid_ana.root" $_target
 
 

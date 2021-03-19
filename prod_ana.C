@@ -1,4 +1,4 @@
-int prod_ana(Int_t nEvents=10, TString prefix="ll") {
+int prod_ana(Int_t nEvents=10, TString prefix="ll", Bool_t IsSignal=true) {
 
 	// *** the files coming from the simulation
 	bool signal = true;
@@ -14,16 +14,16 @@ int prod_ana(Int_t nEvents=10, TString prefix="ll") {
 	// *** PID table with selection thresholds; can be modified by the user
 	TString pidParFile = TString(gSystem->Getenv("VMCWORKDIR"))+"/macro/params/all.par";	
 
-    std::cout << "FLAGS: " << nEvents << "," << prefix << "," << inPidFile << "," << inParFile << std::endl;
+    std::cout << "FLAGS: " << nEvents << ", " << prefix << ", " << IsSignal << std::endl;
 
 	// *** initialization
 	FairLogger::GetLogger()->SetLogToFile(kFALSE);
 	FairRunAna *fRun = new FairRunAna();
 	FairRuntimeDb *rtdb = fRun->GetRuntimeDb();
-	fRun->SetInputFile(inPidFile);                      // OR
-	//fRun->SetSource(new FairFileSource(inPidFile));   // OR
-	
-	//FairFileSource *fSrc = new FairFileSource(inPidFile); fRun->SetSource(fSrc);
+	fRun->SetInputFile(inPidFile);                          // OR
+	//fRun->SetSource(new FairFileSource(inPidFile));       // OR
+	//FairFileSource *fSrc = new FairFileSource(inPidFile); 
+	//fRun->SetSource(fSrc);
 					
 	
 	// *** setup parameter database 	
@@ -39,6 +39,9 @@ int prod_ana(Int_t nEvents=10, TString prefix="ll") {
 	
 	// *** HERE OUR TASK GOES!
 	PndLLbarAnaTaskRGIS *anaTask = new PndLLbarAnaTaskRGIS();
+	
+	// True for Signal (Default), False for Non-resonant Bkg.
+	anaTask->SetSignalSample(IsSignal);         
 	fRun->AddTask(anaTask);
 	
 	// *** and run analysis

@@ -32,12 +32,13 @@ LUSTRE_HOME="/lustre/panda/"$USER
 nyx=$LUSTRE_HOME"/virgo"
 
 # Data Storage
-_target=$nyx"/data"
+#_target=$nyx"/data"
 
 
 # Init PandaRoot
-# . $LUSTRE_HOME"/fair/dev/build/config.sh"
-. $LUSTRE_HOME"/fair/oct19/build/config.sh"
+#. $LUSTRE_HOME"/fair/oct19/build/config.sh"
+. $LUSTRE_HOME"/fair/dev/build/config.sh"
+
 
 echo -e "\n";
 
@@ -78,24 +79,44 @@ if test "$6" != ""; then
 fi
 
 
-# Get DEC if Keywords Given
+# Get .DEC if Only Keywords [fwp,bkg,dpm] Are Given.
+# e.g. ./jobsim_complete.sh llbar 100 fwp 1.642
+
 if [[ $dec == "fwp" ]]; then
-    _target=$nyx"/"$dec
+    _target=$nyx"/data/"$dec
     dec="llbar_fwp.DEC"
 fi
 
 if [[ $dec == "bkg" ]]; then
-    _target=$nyx"/"$dec
+    _target=$nyx"/data/"$dec
     dec="llbar_bkg.DEC"
 fi 
 
 if [[ $dec == "dpm" ]]; then
-    _target=$nyx"/"$dec
+    _target=$nyx"/data/"$dec
     dec="dpm"
 fi
 
 
-# Prepend Abs. Path to DEC File
+# Deduce Signal/Bkg from .DEC & Create Storage Accordingly.
+# e.g. ./jobsim_complete.sh llbar 100 llbar_fwp.DEC 1.642
+
+if [[ $dec == *"fwp"* ]]; then
+    IsSignal=true
+    _target=$nyx"/data/fwp"
+fi
+
+if [[ $dec == *"bkg"* ]]; then
+    IsSignal=false
+    _target=$nyx"/data/bkg"
+fi
+
+if [[ $dec == *"dpm"* ]]; then
+    IsSignal=false
+    _target=$nyx"/data/dpm"
+fi
+
+# Prepend Absolute Path to .DEC File
 if [[ $dec == *".dec"* ]]; then
   if [[ $dec != \/* ]] ; then
 	dec=$nyx"/"$dec
@@ -156,7 +177,7 @@ echo -e "Prefix    : $outprefix"
 echo -e "Decay     : $dec"
 echo -e "pBeam     : $mom"
 echo -e "Seed      : $seed"
-echo ""
+echo -e "Is Signal : $IsSignal"
 echo -e "PID File  : $pidfile"
 
 
@@ -190,14 +211,12 @@ if [[ $opt == *"ana"* ]]; then
     
     echo "Starting Analysis..."
     #root -l -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
-    #root -l -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\"\) > $outprefix"_ana.log" 2>&1
-    root -l -q -b $nyx"/"prod_ana_multi.C\($nevt,\"$pidfile\",0,0,$mode\) &> $outprefix"_ana.log"
-    
-    #mv $outprefix"_ana.root" $_target
-    mv $outprefix"_pid_ana.root" $_target
+    root -l -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\",$IsSignal\) > $outprefix"_ana.log" 2>&1
+
+    mv $outprefix"_ana.root" $_target
     mv $outprefix"_ana.log" $_target
-    
     echo "Finishing Analysis..."
+    
 fi
 
 # ---------------------------------------------------------------
