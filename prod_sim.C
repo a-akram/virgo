@@ -48,7 +48,7 @@ int prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.
     
 
     //----- Extended Target Profile
-    //fRun->SetTargetMode(4);  // mode=4/5: measured/flt gas density profile in z
+    fRun->SetTargetMode(4);  // mode=4/5: measured/flt gas density profile in z
 
 
     //----- Initialization

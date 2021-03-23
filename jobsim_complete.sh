@@ -32,7 +32,7 @@ LUSTRE_HOME="/lustre/panda/"$USER
 nyx=$LUSTRE_HOME"/virgo"
 
 # Data Storage
-#_target=$nyx"/data"
+_target=$nyx"/data"
 
 
 # Init PandaRoot
@@ -103,17 +103,17 @@ fi
 
 if [[ $dec == *"fwp"* ]]; then
     IsSignal=true
-    _target=$nyx"/data/fwp"
+    #_target=$nyx"/data/fwp"
 fi
 
 if [[ $dec == *"bkg"* ]]; then
     IsSignal=false
-    _target=$nyx"/data/bkg"
+    #_target=$nyx"/data/bkg"
 fi
 
 if [[ $dec == *"dpm"* ]]; then
     IsSignal=false
-    _target=$nyx"/data/dpm"
+    #_target=$nyx"/data/dpm"
 fi
 
 # Prepend Absolute Path to .DEC File
@@ -132,7 +132,7 @@ fi
 
 # Make sure `$_target` Exists
 if [ ! -d $_target ]; then
-    mkdir $_target;
+    mkdir -p $_target;
     echo -e "\nThe data dir. at '$_target' created."
 else
     echo -e "\nThe data dir. at '$_target' exists."
