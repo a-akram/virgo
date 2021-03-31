@@ -4,7 +4,7 @@
 # ./runall_prod.sh <prefix> <nevts> <gen> <pbeam>
 # ./runall_prod.sh llbar 100 llbar_fwp.DEC 1.642
 
-if [ $# -lt 4 ]; then
+if [ $# -lt 3 ]; then
   echo -e "\nPerforms Simulation of EvtGen/DPM/FTF/BOX Events.\n"
   echo -e "USAGE: ./runall_prod.sh <prefix> <nevts> <gen> <pbeam>"
   echo -e "USAGE: ./runall_prod.sh llbar 100 llbar_fwp.DEC 1.642\n"
@@ -20,7 +20,7 @@ fi
 LUSTRE_HOME=$HOME"/current/2_deepana"
 
 # Working Directory
-nyx=$LUSTRE_HOME"/virgo"
+nyx=$LUSTRE_HOME"/hpc"
 
 # Data Storage
 _target=$nyx"/data"
@@ -28,7 +28,7 @@ _target=$nyx"/data"
 
 # Init PandaRoot
 #. $HOME"/fair/pandaroot/build-oct19/config.sh"
-. $HOME"/fair/pandaroot_dev/build-March2021/config.sh"
+. $HOME"/fair/pandaroot_dev/build-April2021/config.sh"
 
 
 echo -e "\n";

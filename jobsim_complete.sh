@@ -29,7 +29,7 @@ fi
 LUSTRE_HOME="/lustre/panda/"$USER
 
 # Working Directory
-nyx=$LUSTRE_HOME"/virgo"
+nyx=$LUSTRE_HOME"/hpc"
 
 # Data Storage
 _target=$nyx"/data"
