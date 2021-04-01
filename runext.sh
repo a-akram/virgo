@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # *** USAGE ***
-# ./runall_prod.sh <prefix> <nevts> <gen> <pbeam>
-# ./runall_prod.sh llbar 100 llbar_fwp.DEC 1.642
+# ./runext.sh <prefix> <nevts> <gen> <pbeam>
+# ./runext.sh llbar 100 llbar_fwp.DEC 1.642
 
-if [ $# -lt 4 ]; then
+if [ $# -lt 3 ]; then
   echo -e "\nPerforms Simulation of EvtGen/DPM/FTF/BOX Events.\n"
   echo -e "USAGE: ./runall_prod.sh <prefix> <nevts> <gen> <pbeam>"
   echo -e "USAGE: ./runall_prod.sh llbar 100 llbar_fwp.DEC 1.642\n"

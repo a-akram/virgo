@@ -42,7 +42,7 @@ _target=$nyx"/data"
 
 echo -e "\n";
 
-#Defaults
+# Defaults
 prefix=llbar                # output file naming
 nevt=1000                   # number of events
 dec="llbar_fwp.DEC"         # decay file OR keywords [fwp, bkg, dpm]
@@ -53,7 +53,7 @@ seed=$RANDOM                # random seed for simulation
 run=$SLURM_ARRAY_TASK_ID    # Slurm Array ID
 
 
-#User Input
+# User Input
 if test "$1" != ""; then
   prefix=$1
 fi
