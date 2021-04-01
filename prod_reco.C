@@ -2,7 +2,7 @@
 // to run the macro:
 // root  recoideal_complete.C  or in root session root>.x  recoideal_complete.C
 int prod_reco(Int_t nEvents=10, TString prefix="ll") {
-
+    
     std::cout << "FLAGS: " << nEvents << "," << prefix << std::endl;
     
     //----- User Settings
@@ -14,8 +14,8 @@ int prod_reco(Int_t nEvents=10, TString prefix="ll") {
     TString friend3      = "";
     TString friend4      = "";
     TString output       = "reco";
+    TString opt          = "";
     
-
     //----- Init Settings    
     PndMasterRunAna *fRun = new PndMasterRunAna();
     fRun->SetInput(input);
@@ -27,18 +27,17 @@ int prod_reco(Int_t nEvents=10, TString prefix="ll") {
     fRun->SetParamAsciiFile(parAsciiFile);
     fRun->Setup(prefix);
     
+    //----- Add Options
+    if (opt != "")
+        fRun->SetOptions(opt);
     
     //----- Add AddRecoIdealTasks
     fRun->AddRecoIdealTasks();
-
-
+    
     //----- Intialise & Run
     PndEmcMapper::Init(1);
     fRun->Init();
     fRun->Run(0, nEvents);
     fRun->Finish();
-    
-    
     return 0;
 }
-

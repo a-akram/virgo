@@ -14,8 +14,8 @@ int prod_pid(Int_t nEvents=10, TString prefix="ll") {
     TString friend3      = "reco";
     TString friend4      = "";
     TString output       = "pid";
-
-
+    TString opt          = "stttracking";      // Def.: BarrelTracking. Set for using IdealTracking
+    
     //----- Initial Settings
     PndMasterRunAna *fRun= new PndMasterRunAna();
     
@@ -27,19 +27,18 @@ int prod_pid(Int_t nEvents=10, TString prefix="ll") {
     fRun->SetOutput(output);
     fRun->SetParamAsciiFile(parAsciiFile);
     fRun->Setup(prefix);
-
-
+    
+    //----- Add Options
+    if (opt != "")
+        fRun->SetOptions(opt);
+    
     //----- Add PID Tasks
     fRun->AddPidTasks();
-
-
+    
     //----- Intialise & Run
     PndEmcMapper::Init(1);
     fRun->Init();
     fRun->Run(0, nEvents);
     fRun->Finish();
-    
-    
     return 0;
 }
-

@@ -4,8 +4,7 @@
 int prod_digi(Int_t nEvents=10, TString prefix="ll") {
     
     std::cout << "FLAGS: " << nEvents << "," << prefix << std::endl;
-
-
+    
     //----- User Settings
     TString parAsciiFile = "all.par";
     //TString prefix     = "llbar_fwp";        // "llbar_fwp", "evtcomplete";
@@ -15,8 +14,8 @@ int prod_digi(Int_t nEvents=10, TString prefix="ll") {
     TString friend3      = "";
     TString friend4      = "";
     TString output       = "digi";
-
-
+    TString opt          = "";
+    
     //----- Init Settings
     PndMasterRunAna *fRun= new PndMasterRunAna();
     fRun->SetInput(input);
@@ -27,17 +26,17 @@ int prod_digi(Int_t nEvents=10, TString prefix="ll") {
     fRun->AddFriend(friend4);
     fRun->SetParamAsciiFile(parAsciiFile);
     fRun->Setup(prefix);
-
-
+    
+    //----- Add Options
+    if (opt != "")
+        fRun->SetOptions(opt);
+    
     //----- AddDigiTasks
     fRun->AddDigiTasks();
-
-
+    
     //----- Intialise & Run
     fRun->Init();
     fRun->Run(0, nEvents);
     fRun->Finish();
-
-
     return 0;
 }

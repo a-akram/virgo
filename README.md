@@ -1,5 +1,5 @@
 
-## Login to Virgo
+## _Login to Virgo_
 
 ```bash
 # proxy jump to Virgo Submit Node
@@ -8,7 +8,19 @@ ssh -J lxpool aakram@virgo-debian8.hpc.gsi.de
 ssh lxpool-virgo-debian8
 ```
 
-## Macros for Virgo
+## _Update_
+
+**NOTE:** As of `12 March 2021`, the BarrelTrackFinder is set as default tracking algorithm (previouly IdealTrackFinder) used in PID stage. In order to use IdealPID in conjuction with the IdealRECO add following line in `prod_pid.C` macro. 
+
+```c++
+//in macro proc_pid.C
+TString opt = "stttracking"; 
+fRun->SetOptions(opt);
+```
+
+One can provide `opt` from outside the macro as well.
+
+## _Macros for Virgo_
 
 The macros for PandaRoot simulation and analysis are placed in PandaRoot repository at `macro/production/scripts` which are based on `macro/master` macros. Change according to your need. Two methods to use these macros.
 
@@ -29,7 +41,7 @@ root -l -b -q prod_aod.C\(\"$outprefix\"\) &> $outprefix"_pid.log"
 **NOTE**: `prod_aod.C` (`full_complete.C`) is standard Digitazation/Reconstruction/PID macro.
 
 
-## Tools on Virgo
+## _Tools on Virgo_
 
 ### (+) - Terminal Multiplexer (tmux)
 
@@ -75,12 +87,8 @@ export GIT_PROXY_COMMAND=$PWD/gitproxy
 
 
 ----
-
-
-
-
-## SLURM Guide
-
+## SLURM 
+----
 ```bash
 sinfo       # Information on cluster partitions and nodes
 squeue      # Overview of jobs and their states
