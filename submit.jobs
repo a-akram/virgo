@@ -10,8 +10,8 @@
 # *** Export Variables ***
 
 export LUSTRE_HOME="/lustre/panda/"$USER
-export SLURM_SUBMIT_DIR=$LUSTRE_HOME"/virgo"
-export SLURM_WORKING_DIR=$LUSTRE_HOME"/virgo/logs"
+export SLURM_SUBMIT_DIR=$LUSTRE_HOME"/hpc"
+export SLURM_WORKING_DIR=$LUSTRE_HOME"/hpc/logs"
 export SLURM_JOB_NAME="ant"
 
 mkdir -p $SLURM_WORKING_DIR;
@@ -29,6 +29,7 @@ mkdir -p $SLURM_WORKING_DIR;
 
 #sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J fwp1 --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh fwp1 2000 llbar_fwp.DEC 1.642
 #sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J bkg1 --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh bkg1 2000 llbar_bkg.DEC 1.642
+#sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J efwp1 --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh efwp1 2000 llbar_fwp.DEC 1.642
+#sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J ebkg1 --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh ebkg1 2000 llbar_bkg.DEC 1.642
 
-sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J efwp1 --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh efwp1 2000 llbar_fwp.DEC 1.642
-sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J ebkg1 --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh ebkg1 2000 llbar_bkg.DEC 1.642
+sbatch -a1-50 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J efwp1 --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh efwp1 2000 llbar_fwp.DEC 1.642

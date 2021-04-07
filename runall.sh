@@ -34,10 +34,20 @@ _target=$nyx"/data"
 echo -e "\n";
 
 # Defaults
+prefix=llbar                # output file naming
+nevt=1000                   # number of events
+dec="llbar_fwp.DEC"         # decay file OR keywords [fwp, bkg, dpm]
+mom=1.642                   # pbarp with 1.642 GeV/c
+mode=0                      # mode for analysis
+opt="ana"                   # use opt to do specific tasks e.g. ana for analysis etc.
+seed=$RANDOM                # random seed for simulation
+run=1                       # Slurm Array ID
+
+# Defaults
 prefix=llbar
 nevt=10
 dec="llbar_fwp.DEC"
-pbeam=1.642
+mom=1.642
 seed=$RANDOM
 
 
@@ -64,17 +74,17 @@ fi
 
 if [[ $dec == *"fwp"* ]]; then
     IsSignal=true
-    _target=$nyx"/data/fwp"
+    #_target=$nyx"/data/fwp"
 fi
 
 if [[ $dec == *"bkg"* ]]; then
     IsSignal=false
-    _target=$nyx"/data/bkg"
+    #_target=$nyx"/data/bkg"
 fi
 
 if [[ $dec == *"dpm"* ]]; then
     IsSignal=false
-    _target=$nyx"/data/dpm"
+    #_target=$nyx"/data/dpm"
 fi
 
 
@@ -104,23 +114,24 @@ outprefix=$_target"/"$prefix
 # ---------------------------------------------------------------
 
 echo ""
-echo "Lustre Home  : $LUSTRE_HOME"
-echo "Working Dir. : $nyx"
-echo "Temp Dir.    : $tmpdir"
-echo "Target Dir.  : $_target"
+echo -e "Directories :-"
+echo -e "Lustre Home : $LUSTRE_HOME"
+echo -e "Working Dir.: $nyx"
+#echo -e "Temp Dir.  : $tmpdir"
+echo -e "Target Dir. : $_target"
 echo ""
-echo -e "--Macro--"
-echo -e "Events    : $nevt"
-echo -e "Prefix    : $outprefix"
-echo -e "Decay     : $dec"
-echo -e "pBeam     : $mom"
-echo -e "Seed      : $seed"
-echo -e "Is Signal : $IsSignal"
-echo -e "PID File  : $pidfile"
+echo -e "Macro Params:-"
+echo -e "Events      : $nevt"
+echo -e "Prefix      : $outprefix"
+echo -e "Decay       : $dec"
+echo -e "pBeam       : $mom"
+echo -e "Seed        : $seed"
+echo -e "Is Signal   : $IsSignal"
+#echo -e "PID File   : $pidfile"
 
 
 # Terminate Script for Testing.
-exit 0;
+# exit 0;
 
 
 # ---------------------------------------------------------------
