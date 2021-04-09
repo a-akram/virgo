@@ -6,10 +6,11 @@
 // root  sim_complete.C"(100, "TGeant4",2)"
 
 //pBeam=7.0 -> CM energy at X(3872) mass
-int prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.DEC", Double_t pBeam=1.642, Int_t seed=42) {
+int prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.DEC", Double_t pBeam=1.642, Int_t seed=42, Bool_t IsExtended=true) {
     
     std::cout << "FLAGS: " << nEvents << "," << prefix << "," << inputGen << "," << pBeam << std::endl;
     std::cout << "SEED : " << seed << std::endl;
+    std::cout << "IsExtended: " << IsExtended << std::endl;
     
     // Set Seed for Random Generator
     // gRandom->SetSeed();
@@ -48,7 +49,8 @@ int prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.
     
 
     //----- Extended Target Profile
-    //fRun->SetTargetMode(4);  // mode=4/5: measured/flat gas density profile in z
+    if(IsExtended)
+        fRun->SetTargetMode(4);  // mode=4/5: measured/flat gas density profile in z
 
 
     //----- Initialization
