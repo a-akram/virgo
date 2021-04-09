@@ -1,6 +1,7 @@
 void merge(TString ntp="ntpBestPbarP", TString fout="BestPbarP.root", TString f1="fwp_*_ana.root", TString f2="", TString f3="", TString f4="", TString f5="") {
 
-    // USAGE: root -l -b -q 'merge.C("ntpBestPbarP","BestPbarP.root","fwp_*_ana.root")'
+    // USAGE: root -l -b -q 'merge.C("ntpBestPbarP","fwp-BestPbarP.root","fwp_*_ana.root")'
+    // USAGE: root -l -b -q 'merge.C("ntpMCTruth","fwp-MCTruth.root","fwp_*_ana.root")'
     
 	if (ntp=="" || fout=="" || f1=="")
 	{
