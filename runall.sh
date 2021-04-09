@@ -6,11 +6,10 @@
 
 
 # Lustre Storage
-LUSTRE_HOME=$HOME"/current/2_deepana/rgis"
+LUSTRE_HOME=$HOME"/current/2_deepana/hpc"
 
 # Working Directory
-#nyx=$HOME"/current/2_deepana/rgis/standard"
-nyx=$HOME"/current/2_deepana/rgis/extended"
+nyx=$HOME"/current/2_deepana/hpc"
 
 # Data Storage
 _target=$nyx"/data"
