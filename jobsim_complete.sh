@@ -183,7 +183,7 @@ echo -e "PID File  : $pidfile"
 
 
 # Terminate Script for Testing.
-exit 0;
+# exit 0;
 
 
 # ---------------------------------------------------------------
