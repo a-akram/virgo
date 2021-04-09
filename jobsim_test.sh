@@ -29,10 +29,10 @@ fi
 LUSTRE_HOME="/lustre/panda/"$USER
 
 # Working Directory
-nyx=$LUSTRE_HOME"/virgo"
+nyx=$LUSTRE_HOME"/hpc"
 
 # Data Storage
-#_target=$nyx"/data"
+_target=$nyx"/data"
 
 
 # Init PandaRoot
@@ -42,7 +42,7 @@ nyx=$LUSTRE_HOME"/virgo"
 
 echo -e "\n";
 
-#Defaults
+# Defaults
 prefix=llbar                # output file naming
 nevt=1000                   # number of events
 dec="llbar_fwp.DEC"         # decay file OR keywords [fwp, bkg, dpm]
@@ -51,9 +51,9 @@ mode=0                      # mode for analysis
 opt="ana"                   # use opt to do specific tasks e.g. ana for analysis etc.
 seed=$RANDOM                # random seed for simulation
 run=$SLURM_ARRAY_TASK_ID    # Slurm Array ID
+IsExtendedTarget=true       # Ask for point-like or extended target during simulation.
 
-
-#User Input
+# User Input
 if test "$1" != ""; then
   prefix=$1
 fi
@@ -103,17 +103,17 @@ fi
 
 if [[ $dec == *"fwp"* ]]; then
     IsSignal=true
-    _target=$nyx"/data/fwp"
+    #_target=$nyx"/data/fwp"
 fi
 
 if [[ $dec == *"bkg"* ]]; then
     IsSignal=false
-    _target=$nyx"/data/bkg"
+    #_target=$nyx"/data/bkg"
 fi
 
 if [[ $dec == *"dpm"* ]]; then
     IsSignal=false
-    _target=$nyx"/data/dpm"
+    #_target=$nyx"/data/dpm"
 fi
 
 # Prepend Absolute Path to .DEC File
@@ -132,7 +132,7 @@ fi
 
 # Make sure `$_target` Exists
 if [ ! -d $_target ]; then
-    mkdir $_target;
+    mkdir -p $_target;
     echo -e "\nThe data dir. at '$_target' created."
 else
     echo -e "\nThe data dir. at '$_target' exists."
@@ -177,11 +177,13 @@ echo -e "Prefix    : $outprefix"
 echo -e "Decay     : $dec"
 echo -e "pBeam     : $mom"
 echo -e "Seed      : $seed"
-echo -e "Is Signal : $IsSignal"
+echo -e "IsSignal  : $IsSignal"
+echo -e "IsExtended: $IsExtendedTarget"
 echo -e "PID File  : $pidfile"
 
+
 # Terminate Script for Testing.
-exit 0;
+# exit 0;
 
 # Execute application code
 hostname; sleep 200;

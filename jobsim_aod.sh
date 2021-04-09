@@ -29,10 +29,10 @@ fi
 LUSTRE_HOME="/lustre/panda/"$USER
 
 # Working Directory
-nyx=$LUSTRE_HOME"/virgo"
+nyx=$LUSTRE_HOME"/hpc"
 
 # Data Storage
-#_target=$nyx"/data"
+_target=$nyx"/data"
 
 
 # Init PandaRoot
@@ -42,7 +42,7 @@ nyx=$LUSTRE_HOME"/virgo"
 
 echo -e "\n";
 
-#Defaults
+# Defaults
 prefix=llbar                # output file naming
 nevt=1000                   # number of events
 dec="llbar_fwp.DEC"         # decay file OR keywords [fwp, bkg, dpm]
@@ -51,9 +51,9 @@ mode=0                      # mode for analysis
 opt="ana"                   # use opt to do specific tasks e.g. ana for analysis etc.
 seed=$RANDOM                # random seed for simulation
 run=$SLURM_ARRAY_TASK_ID    # Slurm Array ID
+IsExtendedTarget=true       # Ask for point-like or extended target during simulation.
 
-
-#User Input
+# User Input
 if test "$1" != ""; then
   prefix=$1
 fi
@@ -103,17 +103,17 @@ fi
 
 if [[ $dec == *"fwp"* ]]; then
     IsSignal=true
-    _target=$nyx"/data/fwp"
+    #_target=$nyx"/data/fwp"
 fi
 
 if [[ $dec == *"bkg"* ]]; then
     IsSignal=false
-    _target=$nyx"/data/bkg"
+    #_target=$nyx"/data/bkg"
 fi
 
 if [[ $dec == *"dpm"* ]]; then
     IsSignal=false
-    _target=$nyx"/data/dpm"
+    #_target=$nyx"/data/dpm"
 fi
 
 # Prepend Absolute Path to .DEC File
@@ -132,7 +132,7 @@ fi
 
 # Make sure `$_target` Exists
 if [ ! -d $_target ]; then
-    mkdir $_target;
+    mkdir -p $_target;
     echo -e "\nThe data dir. at '$_target' created."
 else
     echo -e "\nThe data dir. at '$_target' exists."
@@ -177,7 +177,8 @@ echo -e "Prefix    : $outprefix"
 echo -e "Decay     : $dec"
 echo -e "pBeam     : $mom"
 echo -e "Seed      : $seed"
-echo -e "Is Signal : $IsSignal"
+echo -e "IsSignal  : $IsSignal"
+echo -e "IsExtended: $IsExtendedTarget"
 echo -e "PID File  : $pidfile"
 
 
@@ -189,7 +190,7 @@ echo -e "PID File  : $pidfile"
 # ---------------------------------------------------------------
 echo ""
 echo "Started Simulating..."
-root -l -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed\) > $outprefix"_sim.log" 2>&1
+root -l -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed,$IsExtendedTarget\) > $outprefix"_sim.log" 2>&1
 
 echo "Started AOD (Digi, Reco, Pid)..."
 root -l -b -q $nyx"/"prod_aod.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
@@ -200,6 +201,17 @@ echo ""
 # ---------------------------------------------------------------
 #                            Initiate Analysis
 # ---------------------------------------------------------------
+if [[ $opt == *"ana"* ]]; then
+    
+    echo "Starting Analysis..."
+    #root -l -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
+    root -l -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\",$IsSignal\) > $outprefix"_ana.log" 2>&1
+
+    mv $outprefix"_ana.root" $_target
+    mv $outprefix"_ana.log" $_target
+    echo "Finishing Analysis..."
+    
+fi
 
 if [[ $opt == *"ana"* ]]; then
     

@@ -177,12 +177,13 @@ echo -e "Prefix    : $outprefix"
 echo -e "Decay     : $dec"
 echo -e "pBeam     : $mom"
 echo -e "Seed      : $seed"
-echo -e "Is Signal : $IsSignal"
+echo -e "IsSignal  : $IsSignal"
+echo -e "IsExtended: $IsExtendedTarget"
 echo -e "PID File  : $pidfile"
 
 
 # Terminate Script for Testing.
-# exit 0;
+exit 0;
 
 
 # ---------------------------------------------------------------
