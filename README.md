@@ -283,4 +283,19 @@ sinfo -e -o '%9P %4c %8z %8X %8Y %8Z %5D %N'
 
 ```
 
+## Helper Bash Commands
+
+
+```bash
+# find and replace
+find . -name '*cells*' -exec bash -c 'mv $0 ${0/cells/tubes}' {} \;
+
+# find and count
+find . -name *.root | wc -l
+  
+# copy file ranges
+cp fwp1_{1..50}_sim.root .
+```
+
+
 **NOTE:** Everything is good to go.
