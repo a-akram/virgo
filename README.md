@@ -291,10 +291,19 @@ sinfo -e -o '%9P %4c %8z %8X %8Y %8Z %5D %N'
 find . -name '*cells*' -exec bash -c 'mv $0 ${0/cells/tubes}' {} \;
 
 # find and count
-find . -name *.root | wc -l
+find . -name "fwp*.root" | wc -l
+find . -name "fwp*.root" -printf '.' | wc -m
+
+
+# find and count in top-level cwd.
+find . -maxdepth 1 -name "efwp1_*_ana.root" | wc -l
   
 # copy file ranges
-cp fwp1_{1..50}_sim.root .
+cp fwp1_{1..50}_sim.root fwp1/
+
+# moving file range
+cp efwp1_{1..50}_sim.root efwp1/
+
 ```
 
 
