@@ -6,7 +6,7 @@
 // root  sim_complete.C"(100, "TGeant4",2)"
 
 //pBeam=7.0 -> CM energy at X(3872) mass
-int prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.DEC", Double_t pBeam=1.642, Int_t seed=42, Bool_t IsExtended=false) {
+int prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.DEC", Double_t pBeam=1.642, Int_t seed=42, Int_t TargetMode=0) {
     
     std::cout << "FLAGS: " << nEvents << "," << prefix << "," << inputGen << "," << pBeam << std::endl;
     std::cout << "SEED : " << seed << std::endl;
@@ -48,9 +48,13 @@ int prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.
     fRun->SetBeamMom(pBeam);
     
 
-    //----- Extended Target Profile
-    if(IsExtended)
-        fRun->SetTargetMode(4);  // mode=4/5: measured/flat gas density profile in z
+    //----- Set Target Mode
+    // TargetMode=0: point-like target (default)
+    // TargetMode=1: Cluster-jet Target
+    // TargetMode=2: Pellet Target
+    // TargetMode=3: Pellet Stations
+    // TargetMode=4: Cluster-jet target ??? with measured gas density profile in z
+    fRun->SetTargetMode(TargetMode);  
 
 
     //----- Initialization

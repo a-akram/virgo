@@ -29,7 +29,7 @@ opt="ana:sim"               # use opt to do specific tasks e.g. ana for analysis
 #seed=$RANDOM               # random seed for simulation
 seed=42                     # fixed seed for reproducing results.
 run=1                       # Slurm Array ID
-IsExtendedTarget=true       # Ask for point-like or extended target during simulation.
+TargetMode=4                # Ask for point-like (0) or extended (4) target during simulation.
 
 # User Input
 if test "$1" != ""; then
@@ -116,7 +116,7 @@ echo -e "Decay       : $dec"
 echo -e "pBeam       : $mom"
 echo -e "Seed        : $seed"
 echo -e "Is Signal   : $IsSignal"
-echo -e "Is Extended : $IsExtendedTarget"
+echo -e "TargetMode  : $TargetMode"
 
 
 # Terminate Script for Testing.
@@ -129,7 +129,7 @@ exit 0;
 if [[ $opt == *"sim"* ]]; then
     echo ""
     echo "Started Simulating..."
-    root -l -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed,$IsExtendedTarget\) > $outprefix"_sim.log" 2>&1
+    root -l -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed,$TargetMode\) > $outprefix"_sim.log" 2>&1
 
     echo "Started Digitization..."
     root -l -b -q $nyx"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 

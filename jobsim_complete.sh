@@ -51,7 +51,7 @@ mode=0                      # mode for analysis
 opt="ana"                   # use opt to do specific tasks e.g. ana for analysis etc.
 seed=$RANDOM                # random seed for simulation
 run=$SLURM_ARRAY_TASK_ID    # Slurm Array ID
-IsExtendedTarget=true       # Ask for point-like or extended target during simulation.
+TargetMode=4                # Ask for point-like (0) or extended (4) target during simulation.
 
 # User Input
 if test "$1" != ""; then
@@ -178,7 +178,7 @@ echo -e "Decay     : $dec"
 echo -e "pBeam     : $mom"
 echo -e "Seed      : $seed"
 echo -e "IsSignal  : $IsSignal"
-echo -e "IsExtended: $IsExtendedTarget"
+echo -e "TargetMode: $TargetMode"
 echo -e "PID File  : $pidfile"
 
 
@@ -191,7 +191,7 @@ echo -e "PID File  : $pidfile"
 # ---------------------------------------------------------------
 echo ""
 echo "Started Simulating..."
-root -l -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed,$IsExtendedTarget\) > $outprefix"_sim.log" 2>&1
+root -l -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed,$TargetMode\) > $outprefix"_sim.log" 2>&1
 
 echo "Started Digitization..."
 root -l -b -q $nyx"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
