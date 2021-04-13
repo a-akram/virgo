@@ -10,7 +10,7 @@ int prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.
     
     std::cout << "FLAGS: " << nEvents << "," << prefix << "," << inputGen << "," << pBeam << std::endl;
     std::cout << "SEED : " << seed << std::endl;
-    std::cout << "IsExtended: " << IsExtended << std::endl;
+    std::cout << "Mode : " << TargetMode << std::endl;
     
     // Set Seed for Random Generator
     // gRandom->SetSeed();
