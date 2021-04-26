@@ -36,8 +36,9 @@ _target=$nyx"/data"
 
 
 # Init PandaRoot
-#. $LUSTRE_HOME"/fair/oct19/build/config.sh"
-. $LUSTRE_HOME"/fair/dev/build/config.sh"
+#. $LUSTRE_HOME"/fair/dev/build/config.sh"
+#. $LUSTRE_HOME"/pandaroot/install-12.0.0/bin/config.sh" -p
+. $LUSTRE_HOME"/pandaroot/install-dev/bin/config.sh" -p
 
 
 echo -e "\n";
@@ -234,14 +235,15 @@ echo "Moving Files from '$tmpdir' to '$_target'"
 
 # move root files to target dir
 mv $outprefix"_par.root" $_target
-#mv $outprefix"_sim.log" $_target
 mv $outprefix"_sim.root" $_target
-#mv $outprefix"_digi.log" $_target
 #mv $outprefix"_digi.root" $_target
-#mv $outprefix"_reco.log" $_target
-#mv $outprefix"_reco.root" $_target
-#mv $outprefix"_pid.log" $_target
+mv $outprefix"_reco.root" $_target
 mv $outprefix"_pid.root" $_target
+
+mv $outprefix"_sim.log" $_target
+#mv $outprefix"_digi.log" $_target
+#mv $outprefix"_reco.log" $_target
+#mv $outprefix"_pid.log" $_target
 
 
 #*** Tidy Up ***

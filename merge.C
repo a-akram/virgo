@@ -1,5 +1,13 @@
 void merge(TString ntp="ntpBestPbarP", TString fout="BestPbarP.root", TString f1="fwp_*_ana.root", TString f2="", TString f3="", TString f4="", TString f5="") {
 
+    // USAGE: root -l -b -q 'merge.C("ntpPiMinus","fwp1-PiMinus.root","fwp1_*_ana.root")'
+    // USAGE: root -l -b -q 'merge.C("ntpPiPlus","fwp1-PiPlus.root","fwp1_*_ana.root")'
+    // USAGE: root -l -b -q 'merge.C("ntpProton","fwp1-Proton.root","fwp1_*_ana.root")'
+    // USAGE: root -l -b -q 'merge.C("ntpAntiProton","fwp1-AntiProton.root","fwp1_*_ana.root")'
+
+    // USAGE: root -l -b -q 'merge.C("ntpLambda","fwp1-Lambda.root","fwp1_*_ana.root")'
+    // USAGE: root -l -b -q 'merge.C("ntpLambdaBar","fwp1-LambdaBar.root","fwp1_*_ana.root")'
+
     // USAGE: root -l -b -q 'merge.C("ntpBestPbarP","fwp-BestPbarP.root","fwp_*_ana.root")'
     // USAGE: root -l -b -q 'merge.C("ntpMCTruth","fwp-MCTruth.root","fwp_*_ana.root")'
     
