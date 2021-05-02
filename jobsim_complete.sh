@@ -38,8 +38,7 @@ _target=$nyx"/data"
 # Init PandaRoot
 #. $LUSTRE_HOME"/fair/dev/build/config.sh"
 #. $LUSTRE_HOME"/pandaroot/install-dev/bin/config.sh" -p
-#. $LUSTRE_HOME"/pandaroot/install-12.0.1/bin/config.sh" -p
-. $LUSTRE_HOME"/pandaroot/build-12.0.1/bin/config.sh"
+. $LUSTRE_HOME"/pandaroot/install-12.0.1/bin/config.sh" -p
 
 
 echo -e "\n";
