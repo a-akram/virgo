@@ -17,9 +17,9 @@ if [ $# -lt 3 ]; then
   echo -e " <dec>     : Decay File or Keywords: fwp (signal), bkg (non-resonant bkg), dpm (generic bkg)"
   echo -e " <pbeam>   : Momentum of pbar-beam (GeV/c)."
   echo -e " [opt]     : Optional options: if contains 'savesim', 'saveall' or 'ana'\n";
-  echo -e "Example 1 : sbatch -a1-20 [options] jobsim_complete.sh sig 1000 fwp"
-  echo -e "Example 2 : sbatch -a1-20 [options] jobsim_complete.sh bkg 1000 dpm"
-  echo -e "Example 3 : ./jobsim_complete.sh llbar 100 fwp\n"
+  echo -e "Example 1 : sbatch -a1-20 [options] jobsim_complete.sh sig 1000 llbar_fwp.DEC"
+  echo -e "Example 2 : sbatch -a1-20 [options] jobsim_complete.sh bkg 1000 llbar_bkg.DEC"
+  echo -e "Example 3 : ./jobsim_complete.sh sig 100 llbar_fwp.DEC\n"
   exit 1
 fi
 
@@ -37,8 +37,9 @@ _target=$nyx"/data"
 
 # Init PandaRoot
 #. $LUSTRE_HOME"/fair/dev/build/config.sh"
-#. $LUSTRE_HOME"/pandaroot/install-12.0.0/bin/config.sh" -p
-. $LUSTRE_HOME"/pandaroot/install-dev/bin/config.sh" -p
+#. $LUSTRE_HOME"/pandaroot/install-dev/bin/config.sh" -p
+#. $LUSTRE_HOME"/pandaroot/install-12.0.1/bin/config.sh" -p
+. $LUSTRE_HOME"/pandaroot/build-12.0.1/bin/config.sh"
 
 
 echo -e "\n";
@@ -242,8 +243,8 @@ mv $outprefix"_pid.root" $_target
 
 mv $outprefix"_sim.log" $_target
 #mv $outprefix"_digi.log" $_target
-#mv $outprefix"_reco.log" $_target
-#mv $outprefix"_pid.log" $_target
+mv $outprefix"_reco.log" $_target
+mv $outprefix"_pid.log" $_target
 
 
 #*** Tidy Up ***
