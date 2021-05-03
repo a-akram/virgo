@@ -33,14 +33,13 @@ r=1
 # ----- Examples: Test, Standard, Extended.
 # ***
 
-
-
 # Large/Main Jobs:
 #sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J fwp1 --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh fwp1 2000 llbar_fwp.DEC 1.642
 #sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J bkg1 --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh bkg1 2000 llbar_bkg.DEC 1.642
 #sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J efwp$r --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh efwp$r 2000 llbar_fwp.DEC 1.642
 #sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J ebkg$r --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh ebkg$r 2000 llbar_bkg.DEC 1.642
 
+
 # Small/Test Jobs:
-sbatch -a1-5 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J test --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh test 2000 llbar_fwp.DEC 1.642
+sbatch -a1-1 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J test --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_test.sh test 1000 llbar_fwp.DEC 1.642
 

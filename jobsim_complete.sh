@@ -36,8 +36,9 @@ _target=$nyx"/data"
 
 
 # Init PandaRoot
-#. $LUSTRE_HOME"/fair/dev/build/config.sh"
+#. $LUSTRE_HOME"/pandaroot/build-dev/config.sh"
 #. $LUSTRE_HOME"/pandaroot/install-dev/bin/config.sh" -p
+#. $LUSTRE_HOME"/pandaroot/build-12.0.1/config.sh"
 . $LUSTRE_HOME"/pandaroot/install-12.0.1/bin/config.sh" -p
 
 
@@ -52,7 +53,7 @@ mode=0                      # mode for analysis
 opt="ana"                   # use opt to do specific tasks e.g. ana for analysis etc.
 seed=$RANDOM                # random seed for simulation
 run=$SLURM_ARRAY_TASK_ID    # Slurm Array ID
-TargetMode=4                # Ask for point-like (0) or extended (4) target during simulation.
+TargetMode=0                # Ask for point-like (0) or extended (4) target during simulation.
 
 # User Input
 if test "$1" != ""; then

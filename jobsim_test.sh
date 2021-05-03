@@ -187,11 +187,14 @@ echo -e "PID File  : $pidfile"
 # exit 0;
 
 # Execute application code
-
+echo ""
+echo "Started Simulating..."
 root -l -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed,$TargetMode\) > $outprefix"_sim.log" 2>&1
+echo "Finished Simulating..."
+echo ""
+
 
 echo "Moving Files from '$tmpdir' to '$_target'"
-
 mv $outprefix"_par.root" $_target
 mv $outprefix"_sim.root" $_target
 mv $outprefix"_sim.log" $_target
@@ -199,3 +202,5 @@ mv $outprefix"_sim.log" $_target
 
 #*** Tidy Up ***
 rm -rf $tmpdir
+
+echo "The Script has Finished wit SLURM_JOB_ID: $SLURM_JOB_ID."
