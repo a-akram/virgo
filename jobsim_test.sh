@@ -36,9 +36,8 @@ _target=$nyx"/data"
 
 
 # Init PandaRoot
-#. $LUSTRE_HOME"/fair/dev/build/config.sh"
-#. $LUSTRE_HOME"/pandaroot/install-dev/bin/config.sh" -p
-. $LUSTRE_HOME"/pandaroot/install-12.0.1/bin/config.sh" -p
+#. $LUSTRE_HOME"/pandaroot/build-dev/config.sh"
+. $LUSTRE_HOME"/pandaroot/install-dev/bin/config.sh" -p
 
 
 echo -e "\n";
@@ -145,11 +144,12 @@ if test "$run" == ""; then
     tmpdir="/tmp/"$USER
 	outprefix=$tmpdir"/"$prefix
 	pidfile=$outprefix"_pid.root"
+	seed=42
 else
     tmpdir="/tmp/"$USER"_"$SLURM_JOB_ID
 	outprefix=$tmpdir"/"$prefix"_"$run
 	pidfile=$outprefix"_pid.root"
-	seed=$seed$run
+	seed=$SLURM_ARRAY_TASK_ID
 fi
 
 
