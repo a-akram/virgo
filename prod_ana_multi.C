@@ -11,7 +11,7 @@ bool CheckFile(TString fn) {
     return fileok;
 }
 
-int prod_ana_multi(Int_t nEvents=0, TString prefix="ll", Bool_t IsSignal=true, int from=1, int to=1, int mode=0) {
+int prod_ana_multi(Int_t nEvents=10, TString prefix="ll", Bool_t IsSignal=true, int from=1, int to=1, int mode=0) {
 
  	if (prefix=="") 
 	{

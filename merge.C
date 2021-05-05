@@ -8,8 +8,8 @@ void merge(TString ntp="ntpBestPbarP", TString fout="BestPbarP.root", TString f1
     // USAGE: root -l -b -q 'merge.C("ntpLambda","fwp1-Lambda.root","fwp1_*_ana.root")'
     // USAGE: root -l -b -q 'merge.C("ntpLambdaBar","fwp1-LambdaBar.root","fwp1_*_ana.root")'
 
-    // USAGE: root -l -b -q 'merge.C("ntpBestPbarP","fwp-BestPbarP.root","fwp_*_ana.root")'
-    // USAGE: root -l -b -q 'merge.C("ntpMCTruth","fwp-MCTruth.root","fwp_*_ana.root")'
+    // USAGE: root -l -b -q 'merge.C("ntpBestPbarP","fwp1-BestPbarP.root","fwp1_*_ana.root")'
+    // USAGE: root -l -b -q 'merge.C("ntpMCTruth","fwp1-MCTruth.root","fwp1_*_ana.root")'
     
 	if (ntp=="" || fout=="" || f1=="")
 	{

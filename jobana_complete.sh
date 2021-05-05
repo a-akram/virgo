@@ -29,7 +29,7 @@ LUSTRE_HOME="/lustre/panda/"$USER
 nyx=$LUSTRE_HOME"/hpc"
 
 # Data Storage
-_target=$nyx"/data/ana"
+_target=$nyx"/data"
 
 # Init PandaRoot
 #. $LUSTRE_HOME"/pandaroot/build-dev/config.sh"
@@ -63,8 +63,15 @@ if test "$4" != ""; then
   mode=$4
 fi
 
-outprefix=$_target"/"$prefix"_"$run
-pidfile=$outprefix"_pid.root"
+# IF ARRAY_TASK Used
+if test "$run" == ""; then
+    outprefix=$_target"/"$prefix
+    pidfile=$outprefix"_pid.root"
+else
+    outprefix=$_target"/"$prefix"_"$run
+    pidfile=$outprefix"_pid.root"
+fi
+
 
 # ---------------------------------------------------------------
 #                              Print Flags

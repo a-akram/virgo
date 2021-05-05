@@ -143,13 +143,13 @@ fi
 if test "$run" == ""; then
     tmpdir="/tmp/"$USER
 	outprefix=$tmpdir"/"$prefix
+	seed=4200
 	pidfile=$outprefix"_pid.root"
-	seed=42
 else
     tmpdir="/tmp/"$USER"_"$SLURM_JOB_ID
 	outprefix=$tmpdir"/"$prefix"_"$run
-	pidfile=$outprefix"_pid.root"
 	seed=$SLURM_ARRAY_TASK_ID
+	pidfile=$outprefix"_pid.root"
 fi
 
 
@@ -212,6 +212,7 @@ echo ""
 if [[ $opt == *"ana"* ]]; then
     
     echo "Starting Analysis..."
+    #root -l -q -b $nyx"/"prod_ana_multi.C\(0,\"$pidfile\",$IsSignal,0,0,$mode\) > $outprefix"_ana.log" 2>&1
     #root -l -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
     root -l -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\",$IsSignal\) > $outprefix"_ana.log" 2>&1
 
