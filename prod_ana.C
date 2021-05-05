@@ -20,10 +20,9 @@ int prod_ana(Int_t nEvents=10, TString prefix="ll", Bool_t IsSignal=true) {
 	FairLogger::GetLogger()->SetLogToFile(kFALSE);
 	FairRunAna *fRun = new FairRunAna();
 	FairRuntimeDb *rtdb = fRun->GetRuntimeDb();
-	fRun->SetInputFile(inPidFile);                          // OR
 	//fRun->SetSource(new FairFileSource(inPidFile));       // OR
-	//FairFileSource *fSrc = new FairFileSource(inPidFile); 
-	//fRun->SetSource(fSrc);
+	FairFileSource *fSrc = new FairFileSource(inPidFile);
+	fRun->SetSource(fSrc);
 					
 	
 	// *** setup parameter database 	

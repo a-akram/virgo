@@ -11,7 +11,7 @@ bool CheckFile(TString fn) {
     return fileok;
 }
 
-int prod_ana_multi(Int_t nEvents=0, TString prefix="ll", int from=1, int to=1, int mode=0) {
+int prod_ana_multi(Int_t nEvents=0, TString prefix="ll", Bool_t IsSignal=true, int from=1, int to=1, int mode=0) {
 
  	if (prefix=="") 
 	{
@@ -30,10 +30,10 @@ int prod_ana_multi(Int_t nEvents=0, TString prefix="ll", int from=1, int to=1, i
 	bool     fastsim  = false;
 	int      run      = from;	
 	
-	TString suffix = fastsim? "fsim": "pid";
-	TString outFile    = TString::Format("%s_ana_%d_%d.root", prefix.Data(), from, to);
-	TString inParFile  = TString::Format("%s_%d_par.root", prefix.Data(), from);
-	TString firstFile  = TString::Format("%s_%d_%s.root", prefix.Data(), from, suffix.Data());
+	TString suffix    = fastsim? "fsim": "pid";
+	TString outFile   = TString::Format("%s_ana_%d_%d.root", prefix.Data(), from, to);
+	TString inParFile = TString::Format("%s_%d_par.root", prefix.Data(), from);
+	TString firstFile = TString::Format("%s_%d_%s.root", prefix.Data(), from, suffix.Data());
     
     // *** PID table with selection thresholds; can be modified by the user
 	TString pidParFile = TString(gSystem->Getenv("VMCWORKDIR"))+"/macro/params/all.par";	
@@ -48,7 +48,8 @@ int prod_ana_multi(Int_t nEvents=0, TString prefix="ll", int from=1, int to=1, i
 		to = from;
 	}
 	// if only one file, we name outfile to 'prefix_<run>_ana.root'
-	else if (from==to)  outFile = TString::Format("%s_%d_ana.root", prefix.Data(), from);
+	else if (from==to)
+	    outFile = TString::Format("%s_%d_ana.root", prefix.Data(), from);
 
 
 
@@ -60,15 +61,15 @@ int prod_ana_multi(Int_t nEvents=0, TString prefix="ll", int from=1, int to=1, i
 	
   	// *** add pid files
   	for (int i=from+1; i<=to; ++i) {
-  	
+  	    
+  	    //pidfile: <prefix>_<id>_pid.root
         TString fname = TString::Format("%s_%d_%s.root", prefix.Data(), i, suffix.Data());
         if (CheckFile(fname)) fSrc->AddFile(fname);
-		
   	}
 	
 	fRun->SetSource(fSrc);
- 
-	// *** setup parameter database 	
+    
+	// *** setup parameter database
 	FairParRootFileIo* parIO = new FairParRootFileIo();
 	parIO->open(inParFile);
 	FairParAsciiFileIo* parIOPid = new FairParAsciiFileIo();
@@ -79,14 +80,16 @@ int prod_ana_multi(Int_t nEvents=0, TString prefix="ll", int from=1, int to=1, i
 	rtdb->setOutput(parIO);
 	rtdb->setContainersStatic();
 	fRun->SetOutputFile(outFile);
-	
-
+    
     // *** HERE OUR TASK GOES!
 	PndLLbarAnaTaskRGIS *anaTask = new PndLLbarAnaTaskRGIS();
+    
+	// True for Signal (Default), False for Non-resonant Bkg.
+	anaTask->SetSignalSample(IsSignal);
 	fRun->AddTask(anaTask);
-
+    
 	// *** and run analysis
-	fRun->Init(); 
+	fRun->Init();
 	fRun->Run(0, nEvents);
 	return 0;
 }

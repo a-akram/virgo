@@ -236,12 +236,12 @@ echo "Moving Files from '$tmpdir' to '$_target'"
 # move root files to target dir
 mv $outprefix"_par.root" $_target
 mv $outprefix"_sim.root" $_target
-#mv $outprefix"_digi.root" $_target
+mv $outprefix"_digi.root" $_target
 mv $outprefix"_reco.root" $_target
 mv $outprefix"_pid.root" $_target
 
 mv $outprefix"_sim.log" $_target
-#mv $outprefix"_digi.log" $_target
+mv $outprefix"_digi.log" $_target
 mv $outprefix"_reco.log" $_target
 mv $outprefix"_pid.log" $_target
 
