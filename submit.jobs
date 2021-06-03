@@ -12,7 +12,7 @@ export SLURM_JOB_NAME="llbar"
 
 # Mode (r): 1=NormalIP, 2=NoramlIP+Cryo, 3=BigIP, 4=BigIP+Cryo, 5=Pellet
 # REMEMBER: Compile PandaRoot first after setting the mode to SampleIP().
-r=1
+r=4
 
 # ***
 # ----- Job Syntax
@@ -25,21 +25,22 @@ r=1
 # ----- Submit Jobs
 # ***
 
-# sbatch -a1-100 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J $SLURM_JOB_NAME --comment 'TMP' --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_test.sh llbar 10 fwp
-# sbatch -a1-100 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J $SLURM_JOB_NAME --comment 'AOD' --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_aod.sh llbar 10 fwp
-# sbatch -a1-100 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J $SLURM_JOB_NAME --comment 'COM' --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh llbar 10 fwp
+# sbatch -a1-100 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J $SLURM_JOB_NAME --comment 'TMP' --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_test.sh llbar 10 fwp 
+# sbatch -a1-100 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J $SLURM_JOB_NAME --comment 'AOD' --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_aod.sh llbar 10 fwp 
+# sbatch -a1-100 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J $SLURM_JOB_NAME --comment 'COM' --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh llbar 10 fwp 
 
 # ***
 # ----- Examples: Test, Standard, Extended.
 # ***
 
-# Large/Main Jobs:
+# ----- Small/Test Jobs:
+
+# sbatch -a1-5 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J test --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh test 100 llbar_fwp.DEC 1.642
+
+# ----- Large/Main Jobs:
+
 #sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J fwp1 --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh fwp1 2000 llbar_fwp.DEC 1.642
 #sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J bkg1 --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh bkg1 2000 llbar_bkg.DEC 1.642
-#sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J efwp$r --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh efwp$r 2000 llbar_fwp.DEC 1.642
-#sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J ebkg$r --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh ebkg$r 2000 llbar_bkg.DEC 1.642
 
-
-# Small/Test Jobs:
-sbatch -a1-1 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J test --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_test.sh test 1000 llbar_fwp.DEC 1.642
-
+sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J efwp$r --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh efwp$r 2000 llbar_fwp.DEC 1.642
+sbatch -a1-500 --get-user-env -t 8:00:00 -o '%x-%j.out' -e '%x-%j.err' -J ebkg$r --mail-type=END --mail-user=a.akram@gsi.de -D $SLURM_WORKING_DIR -- $SLURM_SUBMIT_DIR/jobsim_complete.sh ebkg$r 2000 llbar_bkg.DEC 1.642
