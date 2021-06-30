@@ -7,6 +7,7 @@
 # ./jobsim_complete.sh <prefix> <events> <dec>
 # ./jobsim_complete.sh llbar 100 llbar_fwp.DEC
 
+
 if [ $# -lt 3 ]; then
   echo -e "\nMinimum Three Arguments Are Required\n"
   echo -e "USAGE: sbatch -a<min>-<max> -- jobsim_complete.sh <prefix> <nEvents> <dec>\n"
@@ -17,9 +18,8 @@ if [ $# -lt 3 ]; then
   echo -e " <dec>     : Decay File or Keywords: fwp (signal), bkg (non-resonant bkg), dpm (generic bkg)"
   echo -e " <pbeam>   : Momentum of pbar-beam (GeV/c)."
   echo -e " [opt]     : Optional options: if contains 'savesim', 'saveall' or 'ana'\n";
-  echo -e "Example 1 : sbatch -a1-20 [options] jobsim_complete.sh sig 1000 fwp"
-  echo -e "Example 2 : sbatch -a1-20 [options] jobsim_complete.sh bkg 1000 dpm"
-  echo -e "Example 3 : ./jobsim_complete.sh llbar 100 fwp\n"
+  echo -e "Example 1 : sbatch -a1-20 [options] jobsim_complete.sh fwp 1000 llbar_fwp.DEC"
+  echo -e "Example 2 : ./jobsim_complete.sh fwp 100 llbar_fwp.DEC\n"
   exit 1
 fi
 
@@ -28,19 +28,22 @@ fi
 # LUSTRE_HOME=/lustre/$(id -g -n)/$USER
 LUSTRE_HOME="/lustre/panda/"$USER
 
+
 # Working Directory
 nyx=$LUSTRE_HOME"/hpc"
+
 
 # Data Storage
 _target=$nyx"/data"
 
 
 # Init PandaRoot
-#. $LUSTRE_HOME"/fair/oct19/build/config.sh"
-. $LUSTRE_HOME"/fair/dev/build/config.sh"
+#. $LUSTRE_HOME"/pandaroot/build-dev/config.sh"
+. $LUSTRE_HOME"/pandaroot/install-dev/bin/config.sh" -p
 
 
 echo -e "\n";
+
 
 # Defaults
 prefix=llbar                # output file naming
@@ -51,7 +54,8 @@ mode=0                      # mode for analysis
 opt="ana"                   # use opt to do specific tasks e.g. ana for analysis etc.
 seed=$RANDOM                # random seed for simulation
 run=$SLURM_ARRAY_TASK_ID    # Slurm Array ID
-IsExtendedTarget=true       # Ask for point-like or extended target during simulation.
+TargetMode=0                # Ask for point-like (0) or extended (4) target during simulation.
+
 
 # User Input
 if test "$1" != ""; then
@@ -143,12 +147,13 @@ fi
 if test "$run" == ""; then
     tmpdir="/tmp/"$USER
 	outprefix=$tmpdir"/"$prefix
+	seed=4200
 	pidfile=$outprefix"_pid.root"
 else
     tmpdir="/tmp/"$USER"_"$SLURM_JOB_ID
 	outprefix=$tmpdir"/"$prefix"_"$run
+	seed=$SLURM_ARRAY_TASK_ID
 	pidfile=$outprefix"_pid.root"
-	seed=$seed$run
 fi
 
 
@@ -178,7 +183,7 @@ echo -e "Decay     : $dec"
 echo -e "pBeam     : $mom"
 echo -e "Seed      : $seed"
 echo -e "IsSignal  : $IsSignal"
-echo -e "IsExtended: $IsExtendedTarget"
+echo -e "TargetMode: $TargetMode"
 echo -e "PID File  : $pidfile"
 
 
@@ -190,7 +195,7 @@ echo -e "PID File  : $pidfile"
 # ---------------------------------------------------------------
 echo ""
 echo "Started Simulating..."
-root -l -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed,$IsExtendedTarget\) > $outprefix"_sim.log" 2>&1
+root -l -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed,$TargetMode\) > $outprefix"_sim.log" 2>&1
 
 echo "Started AOD (Digi, Reco, Pid)..."
 root -l -b -q $nyx"/"prod_aod.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
@@ -204,21 +209,10 @@ echo ""
 if [[ $opt == *"ana"* ]]; then
     
     echo "Starting Analysis..."
+    #root -l -q -b $nyx"/"prod_ana_multi.C\(0,\"$pidfile\",$IsSignal,0,0,$mode\) > $outprefix"_ana.log" 2>&1
     #root -l -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
     root -l -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\",$IsSignal\) > $outprefix"_ana.log" 2>&1
 
-    mv $outprefix"_ana.root" $_target
-    mv $outprefix"_ana.log" $_target
-    echo "Finishing Analysis..."
-    
-fi
-
-if [[ $opt == *"ana"* ]]; then
-    
-    echo "Starting Analysis..."
-    #root -l -b -q $nyx"/"ana_ntp.C\($nevt,\"$outprefix\"\) > $outprefix"_ana_ntp.log" 2>&1
-    root -l -b -q $nyx"/"prod_ana.C\($nevt,\"$outprefix\",$IsSignal\) > $outprefix"_ana.log" 2>&1
-    
     mv $outprefix"_ana.root" $_target
     mv $outprefix"_ana.log" $_target
     echo "Finishing Analysis..."

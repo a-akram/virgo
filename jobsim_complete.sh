@@ -7,6 +7,7 @@
 # ./jobsim_complete.sh <prefix> <events> <dec>
 # ./jobsim_complete.sh llbar 100 llbar_fwp.DEC
 
+
 if [ $# -lt 3 ]; then
   echo -e "\nMinimum Three Arguments Are Required\n"
   echo -e "USAGE: sbatch -a<min>-<max> -- jobsim_complete.sh <prefix> <nEvents> <dec>\n"
@@ -17,9 +18,8 @@ if [ $# -lt 3 ]; then
   echo -e " <dec>     : Decay File or Keywords: fwp (signal), bkg (non-resonant bkg), dpm (generic bkg)"
   echo -e " <pbeam>   : Momentum of pbar-beam (GeV/c)."
   echo -e " [opt]     : Optional options: if contains 'savesim', 'saveall' or 'ana'\n";
-  echo -e "Example 1 : sbatch -a1-20 [options] jobsim_complete.sh sig 1000 llbar_fwp.DEC"
-  echo -e "Example 2 : sbatch -a1-20 [options] jobsim_complete.sh bkg 1000 llbar_bkg.DEC"
-  echo -e "Example 3 : ./jobsim_complete.sh sig 100 llbar_fwp.DEC\n"
+  echo -e "Example 1 : sbatch -a1-20 [options] jobsim_complete.sh fwp 1000 llbar_fwp.DEC"
+  echo -e "Example 2 : ./jobsim_complete.sh fwp 100 llbar_fwp.DEC\n"
   exit 1
 fi
 
@@ -28,8 +28,10 @@ fi
 # LUSTRE_HOME=/lustre/$(id -g -n)/$USER
 LUSTRE_HOME="/lustre/panda/"$USER
 
+
 # Working Directory
 nyx=$LUSTRE_HOME"/hpc"
+
 
 # Data Storage
 _target=$nyx"/data"
@@ -42,6 +44,7 @@ _target=$nyx"/data"
 
 echo -e "\n";
 
+
 # Defaults
 prefix=llbar                # output file naming
 nevt=1000                   # number of events
@@ -52,6 +55,7 @@ opt="ana"                   # use opt to do specific tasks e.g. ana for analysis
 seed=$RANDOM                # random seed for simulation
 run=$SLURM_ARRAY_TASK_ID    # Slurm Array ID
 TargetMode=0                # Ask for point-like (0) or extended (4) target during simulation.
+
 
 # User Input
 if test "$1" != ""; then
@@ -184,12 +188,13 @@ echo -e "PID File  : $pidfile"
 
 
 # Terminate Script for Testing.
-# exit 0;
+exit 0;
 
 
 # ---------------------------------------------------------------
 #                            Initiate Simulaton
 # ---------------------------------------------------------------
+
 echo ""
 echo "Started Simulating..."
 root -l -b -q $nyx"/"prod_sim.C\($nevt,\"$outprefix\",\"$dec\",$mom,$seed,$TargetMode\) > $outprefix"_sim.log" 2>&1
@@ -198,7 +203,7 @@ echo "Started Digitization..."
 root -l -b -q $nyx"/"prod_digi.C\($nevt,\"$outprefix\"\) > $outprefix"_digi.log" 2>&1 
 
 echo "Started Ideal Reconstruction..."
-root -l -b -q $nyx"/"prod_reco.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
+root -l -b -q $nyx"/"prod_rec.C\($nevt,\"$outprefix\"\) > $outprefix"_reco.log" 2>&1
 
 echo "Started Ideal PID..."
 root -l -b -q $nyx"/"prod_pid.C\($nevt,\"$outprefix\"\) > $outprefix"_pid.log" 2>&1 
@@ -209,6 +214,7 @@ echo ""
 # ---------------------------------------------------------------
 #                            Initiate Analysis
 # ---------------------------------------------------------------
+
 if [[ $opt == *"ana"* ]]; then
     
     echo "Starting Analysis..."
@@ -251,4 +257,3 @@ mv $outprefix"_pid.log" $_target
 rm -rf $tmpdir
 
 echo "The Script has Finished wit SLURM_JOB_ID: $SLURM_JOB_ID."
-

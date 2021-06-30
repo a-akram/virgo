@@ -1,7 +1,7 @@
 // Macro for running Panda reconstruction tasks
 // to run the macro:
 // root  recoideal_complete.C  or in root session root>.x  recoideal_complete.C
-int prod_reco(Int_t nEvents=10, TString prefix="ll") {
+int prod_rec(Int_t nEvents=10, TString prefix="ll") {
     
     std::cout << "FLAGS: " << nEvents << "," << prefix << std::endl;
     
@@ -14,7 +14,7 @@ int prod_reco(Int_t nEvents=10, TString prefix="ll") {
     TString friend3      = "";
     TString friend4      = "";
     TString output       = "reco";
-    TString opt          = "";
+    TString fOption      = "";
     
     //----- Init Settings    
     PndMasterRunAna *fRun = new PndMasterRunAna();
@@ -28,8 +28,8 @@ int prod_reco(Int_t nEvents=10, TString prefix="ll") {
     fRun->Setup(prefix);
     
     //----- Add Options
-    if (opt != "")
-        fRun->SetOptions(opt);
+    if (fOption != "")
+        fRun->SetOptions(fOption);
     
     //----- Add AddRecoIdealTasks
     fRun->AddRecoIdealTasks();

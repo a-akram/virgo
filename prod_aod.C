@@ -22,8 +22,12 @@ int prod_aod(Int_t nEvents=10, TString prefix="ll") {
     TString friend2      = "digi";
     TString friend3      = "reco";
     TString friend4      = "";
-    TString output       = "pid";              // Note that the default tracker is BarrelTrackFinder
-    TString fOption      = "";                 // Set fOptions for other trackers e.g. "stttracking".
+    TString output       = "pid";
+    
+    // Note that the default tracker is BarrelTrackFinder.
+    // Either set fOption="barreltrack" or leave it empty.
+    // Set fOptions="stttracking" for IdealTrackFinder.
+    TString fOption      = "stttracking";
     
     //***
     //----- Init Settings    

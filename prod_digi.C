@@ -14,7 +14,7 @@ int prod_digi(Int_t nEvents=10, TString prefix="ll") {
     TString friend3      = "";
     TString friend4      = "";
     TString output       = "digi";
-    TString opt          = "";
+    TString fOption      = "";
     
     //----- Init Settings
     PndMasterRunAna *fRun= new PndMasterRunAna();
@@ -28,8 +28,8 @@ int prod_digi(Int_t nEvents=10, TString prefix="ll") {
     fRun->Setup(prefix);
     
     //----- Add Options
-    if (opt != "")
-        fRun->SetOptions(opt);
+    if (fOption != "")
+        fRun->SetOptions(fOption);
     
     //----- AddDigiTasks
     fRun->AddDigiTasks();

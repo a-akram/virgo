@@ -15,7 +15,10 @@ int prod_pid(Int_t nEvents=10, TString prefix="ll") {
     TString friend4      = "";
     TString output       = "pid";
     
-    TString fOption      = "stttracking";      // Set for IdealTracking. BarrelTracking is set as default.
+    // Note that the default tracker is BarrelTrackFinder.
+    // Either set fOption="barreltrack" or leave it empty.
+    // Set fOptions="stttracking" for IdealTrackFinder.
+    TString fOption      = "stttracking";
     
     //----- Initial Settings
     PndMasterRunAna *fRun= new PndMasterRunAna();

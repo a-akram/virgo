@@ -53,8 +53,8 @@ int prod_sim(Int_t nEvents=10, TString prefix="ll", TString inputGen="llbar_fwp.
     // TargetMode=1: Cluster-jet Target
     // TargetMode=2: Pellet Target
     // TargetMode=3: Pellet Stations
-    // TargetMode=4: Cluster-jet target ??? with measured gas density profile in z
-    fRun->SetTargetMode(TargetMode);  
+    // TargetMode=4: Cluster-jet target with measured gas density profile in z
+    fRun->SetTargetMode(TargetMode);
 
 
     //----- Initialization
