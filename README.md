@@ -43,6 +43,22 @@ root -l -b -q prod_aod.C\(\"$outprefix\"\) &> $outprefix"_pid.log"
 
 ## _Tools on Virgo_
 
+### (+) - Mount Luster Storage on SSH
+
+```bash
+# mount luster on local machine at 'mnt'
+$ mnt=/tmp/lustre
+$ mkdir $mnt
+$ sshfs lxpool-lustre:/lustre/panda/aakram/ $mnt
+$ ls $mnt
+
+CENTOS  datasets  DEBIAN  docs  hpc  pandaroot  tmux.md
+
+# unmount luster on local machine from 'mnt'
+fusermount -u $mnt
+```
+
+
 ### (+) - Terminal Multiplexer (tmux)
 
 See tmux guide in Dropbox for details. 
