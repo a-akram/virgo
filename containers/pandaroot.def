@@ -6,79 +6,69 @@ From: /home/adeel/current/containers/fairroot.sif
 %setup
     
     mkdir ${SINGULARITY_ROOTFS}/pandaroot
-    cp -R /tmp/v12.0.3 ${SINGULARITY_ROOTFS}/pandaroot
+    cp -R ./v12.0.3 ${SINGULARITY_ROOTFS}/pandaroot
 
 %post
-
-    # Export FairSoft and FairRoot
-    # export SIMPATH=/fairsoft/install
-    # export FAIRROOTPATH=/fairroot/install
     
-    # Check if FairSoft & FairRoot are in PATH
+    export SIMPATH=/fairsoft/install
+    export FAIRROOTPATH=/fairroot/install
+    
+    # TODO: Fix FairRoot container. Do "make install" and "export FAIRROOTPATH=/fairroot/install". 
+    # Untill then install it first before setting up PandaRoot.
+    
+    # *** Setting up FairRoot (install was missing)
+    cd /fairroot/build
+    make install -j8
+    
     ls $SIMPATH
     ls $FAIRROOTPATH
     
+    
     # *** Setting up PandaRoot
     mkdir /pandaroot/build /pandaroot/install
-    cd /pandaroot
     
-    # Build PandaRoot, either this
+    # Build and Install, either this
+    # cd /pandaroot
     # cmake -S ./v12.0.3 -B ./build -DCMAKE_INSTALL_PREFIX=./install
-    # cmake --build ./build -j8
-    # . ./build/config.sh
-    
+    # cmake --build ./build -j8   # note install is empty
+    # cd ./build && make install -j8  # run make install exclusively
+    # cd ..
+
     # OR, do the following
     cd /pandaroot/build
-    cmake cmake -DCMAKE_INSTALL_PREFIX=./install ../v12.0.3
+    cmake -DCMAKE_INSTALL_PREFIX=../install ../v12.0.3
+    
+    echo "Running Make..."
     make -j8 && make install
     
-    # Run from Build
-    . ./build/config.sh -p
+    
+    # Run from Installation
+    . /pandaroot/install/bin/config.sh -p
+
     
     # *** Cleanup
     rm -rf /fairsoft/src /fairsoft/build
     rm -rf /fairroot/src /fairroot/build
     rm -rf /pandaroot/src /pandaroot/build
-    
-    # Run from Installation
-    . ./install/bin/config.sh -p
-    root -l
-    std::cout << "Hello World !!!" << std::endl;
-    .q
    
-%test
-    grep -q NAME=\"Ubuntu\" /etc/os-release
-    if [ $? -eq 0 ]; then
-        echo "Container base is Ubuntu as expected."
-    else
-        echo "Container base is not Ubuntu."
-    fi
-
-    . /pandaroot/build/config.sh -p
-    root -l
-    std::cout << "Hello World !!!" << std::endl;
-    .q
-    
 %environment
 
-    # source /pandaroot/install/bin/config.sh -p
+    source /pandaroot/install/bin/config.sh -p
 
 %runscript
-    
-    echo "Container was created $NOW"
-    echo "Arguments received: $*"
-    
+
+    echo "Arguments Received: $*"
     exec "$@"
 
 
 
 %labels
 
-    Author: "Adeel Akram <adeel.chep@gmail.com>"
-    Version: v1.0.0
-    Uppsala PANDA Group, Sweden.
+    Author: "Adeel Akram <adeel.akram@physics.uu.se>"
+    Location: Uppsala University, Sweden.
+    Date: 11-07-2021
  
 %help
     
-    Container for PandaRoot software stack with Ubuntu 18.04 as base image.
+    PandaRoot container based on FairSoft and FairRoot containers.
  

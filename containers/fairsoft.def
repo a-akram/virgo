@@ -17,7 +17,7 @@ From: ubuntu:18.04
         ca-certificates
 
     # *** Setting Up FairSoft
-    mkdir -p /fairsoft/src fairsoft/build fairsoft/install
+    mkdir -p /fairsoft/src /fairsoft/build /fairsoft/install
     cd /fairsoft
     git clone -b nov20p1 https://github.com/FairRootGroup/FairSoft src
     
@@ -31,17 +31,14 @@ From: ubuntu:18.04
     du -hs /fairsoft/install
     
     # *** Cleanup
-    #rm /fairsoft/src
+    rm -rf /fairsoft/src
+    rm -rf /fairsoft/build
     
-%environment
-
-    export SIMPATH=/fairsoft/install
-
 %labels
 
-    Author: Adeel Akram
-    Email: "Adeel Akram <adeel.chep@gmail.com>"
-    Location: PANDA Group at Uppsala University, Sweden.
+    Author: "Adeel Akram <adeel.akram@physics.uu.se>"
+    Location: Uppsala University, Sweden.
+    Date: 11-07-2021
  
 %help
     
