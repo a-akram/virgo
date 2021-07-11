@@ -1,0 +1,84 @@
+# HEADER
+Bootstrap: localimage
+From: /home/adeel/current/containers/fairroot.sif
+
+# SECTIONS
+%setup
+    
+    mkdir ${SINGULARITY_ROOTFS}/pandaroot
+    cp -R /tmp/v12.0.3 ${SINGULARITY_ROOTFS}/pandaroot
+
+%post
+
+    # Export FairSoft and FairRoot
+    # export SIMPATH=/fairsoft/install
+    # export FAIRROOTPATH=/fairroot/install
+    
+    # Check if FairSoft & FairRoot are in PATH
+    ls $SIMPATH
+    ls $FAIRROOTPATH
+    
+    # *** Setting up PandaRoot
+    mkdir /pandaroot/build /pandaroot/install
+    cd /pandaroot
+    
+    # Build PandaRoot, either this
+    # cmake -S ./v12.0.3 -B ./build -DCMAKE_INSTALL_PREFIX=./install
+    # cmake --build ./build -j8
+    # . ./build/config.sh
+    
+    # OR, do the following
+    cd /pandaroot/build
+    cmake cmake -DCMAKE_INSTALL_PREFIX=./install ../v12.0.3
+    make -j8 && make install
+    
+    # Run from Build
+    . ./build/config.sh -p
+    
+    # *** Cleanup
+    rm -rf /fairsoft/src /fairsoft/build
+    rm -rf /fairroot/src /fairroot/build
+    rm -rf /pandaroot/src /pandaroot/build
+    
+    # Run from Installation
+    . ./install/bin/config.sh -p
+    root -l
+    std::cout << "Hello World !!!" << std::endl;
+    .q
+   
+%test
+    grep -q NAME=\"Ubuntu\" /etc/os-release
+    if [ $? -eq 0 ]; then
+        echo "Container base is Ubuntu as expected."
+    else
+        echo "Container base is not Ubuntu."
+    fi
+
+    . /pandaroot/build/config.sh -p
+    root -l
+    std::cout << "Hello World !!!" << std::endl;
+    .q
+    
+%environment
+
+    # source /pandaroot/install/bin/config.sh -p
+
+%runscript
+    
+    echo "Container was created $NOW"
+    echo "Arguments received: $*"
+    
+    exec "$@"
+
+
+
+%labels
+
+    Author: "Adeel Akram <adeel.chep@gmail.com>"
+    Version: v1.0.0
+    Uppsala PANDA Group, Sweden.
+ 
+%help
+    
+    Container for PandaRoot software stack with Ubuntu 18.04 as base image.
+ 

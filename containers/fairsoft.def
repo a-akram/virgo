@@ -1,0 +1,49 @@
+# HEADER
+Bootstrap: docker
+From: ubuntu:18.04
+
+# SECTIONS
+%post
+
+    # *** Update, Upgrade, Install
+    apt update && apt upgrade -y
+    apt install -y \
+        build-essential \
+        git \
+        curl \
+        vim \
+        wget \
+        cmake \
+        ca-certificates
+
+    # *** Setting Up FairSoft
+    mkdir -p /fairsoft/src fairsoft/build fairsoft/install
+    cd /fairsoft
+    git clone -b nov20p1 https://github.com/FairRootGroup/FairSoft src
+    
+    src/legacy/setup-ubuntu.sh
+    src/bootstrap-cmake.sh /usr/local
+    
+    cmake -S ./src -B ./build -C ./src/FairSoftConfig.cmake -DCMAKE_INSTALL_PREFIX=./install
+    cmake --build ./build -j8
+    
+    # *** Test Installation
+    du -hs /fairsoft/install
+    
+    # *** Cleanup
+    #rm /fairsoft/src
+    
+%environment
+
+    export SIMPATH=/fairsoft/install
+
+%labels
+
+    Author: Adeel Akram
+    Email: "Adeel Akram <adeel.chep@gmail.com>"
+    Location: PANDA Group at Uppsala University, Sweden.
+ 
+%help
+    
+    The FairSoft container based on Ubuntu 18.04. It should be used as a base image to install FairRoot.
+ 
